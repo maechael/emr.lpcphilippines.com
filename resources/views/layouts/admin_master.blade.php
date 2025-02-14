@@ -18,7 +18,8 @@
 
     <!--Jquery extension -->
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Push Nofificatiaon-->
     <script src="{{ asset('js/push.min.js') }}"></script>
 
@@ -105,7 +106,7 @@
     <!-- Start right Content here -->
     <!-- ============================================================== -->
     <div class="main-content">
-        {{--        <div id="notification" class="alert alert-success mx-3">test</div> --}}
+        {{-- <div id="notification" class="alert alert-success mx-3">test</div> --}}
         @yield('admin')
         <!-- End Page-content -->
 
@@ -198,6 +199,9 @@
 
 <!-- form mask init -->
 <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <script>

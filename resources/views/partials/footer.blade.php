@@ -14,6 +14,9 @@
         </div>
     </div>
 </footer>
+@vite(['resources/js/app.js'])
+
+
 
 
 
