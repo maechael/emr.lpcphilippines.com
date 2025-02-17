@@ -190,7 +190,16 @@ class PatientListController extends Controller
                     return $data->firstname . ' ' . $data->lastname;
                 })
                 ->addColumn('firstname', function ($data) {
-                    $firstname = $data->is_pwd ? `$data->firstname(pwd)` : $data->firstname;
+                    $age = Carbon::parse($data->birthdate)->age;
+                    if ($data->is_pwd &&  $age >= 65) {
+                        $firstname =  `$data->firstname(senior)`;
+                    } else if ($data->is_pwd == true) {
+                        $firstname =  `$data->firstname(pwd)`;
+                    } else {
+                        $firstname =  `$data->firstname`;
+                    }
+
+
                     return  $data->firstname;
                 })
                 ->addColumn('age', function ($data) {
