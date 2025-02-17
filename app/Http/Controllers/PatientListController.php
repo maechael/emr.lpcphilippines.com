@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DoctorProfile;
 use App\Models\PatientProfile;
+use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +48,11 @@ class PatientListController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $patientProfile = new PatientProfile();
-            $data['is_pwd'] = $data['is_pwd'] == 'on' ? 1 : 0;
+            if (isset($data['is_pwd'])) {
+                $data['is_pwd'] = $data['is_pwd'] == 'on' ? 1 : 0;
+            } else {
+                $data['is_pwd'] =  0;
+            }
             $patientProfile->fill($data);
             $patientProfile->save();
             DB::commit();
@@ -74,6 +80,11 @@ class PatientListController extends Controller
     public function show($id)
     {
         //
+
+        $patientProfile = PatientProfile::find($id);
+        $patientProfile['age'] = Carbon::parse($patientProfile->birthdate)->age;
+        $specializations = Specialization::orderBy('name')->get();
+        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations'));
     }
 
     /**
@@ -84,7 +95,20 @@ class PatientListController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+
+            $patientProfile = PatientProfile::find($id);
+            return response()->json([
+                'status' => 'success',
+                'data' => $patientProfile,
+                'message' => "Patient Profile Successfully Retrieved"
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -97,6 +121,35 @@ class PatientListController extends Controller
     public function update(Request $request, $id)
     {
         //
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $patientProfile = PatientProfile::find($id);
+            if (isset($data['is_pwd'])) {
+                $data['is_pwd'] = $data['is_pwd'] == 'on' ? 1 : 0;
+            } else {
+                $data['is_pwd'] =  0;
+            }
+            $patientProfile->fill($data);
+
+            $patientProfile->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $patientProfile,
+                'message' => "Patient Profile Successfully Updated"
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info('error on updating patient profile' . $e);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -108,6 +161,23 @@ class PatientListController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            DB::beginTransaction();
+
+            $patientProfile = PatientProfile::find($id);
+            $patientProfile->delete();
+
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => "Patient Profile Successfully Deleted"
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getPatientList(Request $request)
@@ -119,6 +189,10 @@ class PatientListController extends Controller
                 ->addColumn('full_name', function ($data) {
                     return $data->firstname . ' ' . $data->lastname;
                 })
+                ->addColumn('firstname', function ($data) {
+                    $firstname = $data->is_pwd ? `$data->firstname(pwd)` : $data->firstname;
+                    return  $data->firstname;
+                })
                 ->addColumn('age', function ($data) {
                     return Carbon::parse($data->birthdate)->age;
                 })
@@ -128,7 +202,7 @@ class PatientListController extends Controller
                         <i class="ri-more-line"></i>
                     </button>
                     <ul class="dropdown-menu">
-                    <li><button class="dropdown-item viewButton" id="' . $data->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                    <li><button class="dropdown-item viewButton" id="' . $data->id . '"><i class="ri-eye-line"></i>View</button></li>
                         <li><button class="dropdown-item editButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
                         <li><button class="dropdown-item deleteButton" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
                     </ul>

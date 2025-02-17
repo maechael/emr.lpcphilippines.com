@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="dataModalLabel">Add Patient</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="patientListForm">
+            <form id="patientListForm" enctype="multipart/form-data">
                 <div class="modal-body">
 
                     <div class="row mb-2">
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <input type="hidden" name="hidden_id" id="hidden_id">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -84,20 +84,29 @@
 
         $('#patientListForm').on('submit', function(e) {
             e.preventDefault();
-            var url = "{{ route('patient-list.store') }}";
-            var method = 'POST';
+            var hiddenId = $('#hidden_id').val();
+            var url = $('#action_button').val() == 'Update' ? `{{ route('patient-list.update',':id') }}`.replace(':id', hiddenId) : "{{ route('patient-list.store') }}";
+            var method = $('#action_button').val() == 'Update' ? 'PUT' : 'POST';
             var formData = new FormData(this);
+
+            if (method === 'PUT') {
+                formData.append('_method', 'PUT');
+            }
+
             $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 url: url,
-                type: method,
+                type: 'POST',
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
-                contentType: false,
+                contentType: false, // Prevent jQuery from setting content-type
                 dataType: "json",
                 success: function(data) {
                     Swal.fire({
                         title: 'Success!',
-                        text: 'Tools Equipment Policy has been added!',
+                        text: method === 'PUT' ? 'Patient Profile has been updated!' : 'Patient Profile has been added!',
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
@@ -113,8 +122,8 @@
                         confirmButtonText: 'Ok'
                     });
                 }
-            })
-
+            });
         });
+
     });
 </script>

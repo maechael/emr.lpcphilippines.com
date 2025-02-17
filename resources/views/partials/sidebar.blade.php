@@ -31,12 +31,37 @@
 
                 </li>
 
-                <li class="menu-title">Patien Section</li>
+                <li class="menu-title">Patient Section</li>
                 <li>
                     <a href="{{ route('patient-list.index') }}" class="waves-effect">
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Patient List</span>
                     </a>
+
+                </li>
+
+                <li class="menu-title">Doctor Section</li>
+                <li>
+
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-quill-pen-line"></i>
+                        <span>Specialization</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('specialization.index') }}">List</a></li>
+                    </ul>
+
+                </li>
+
+                <li>
+
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-quill-pen-line"></i>
+                        <span>Doctor</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('doctor-profile.index') }}">List</a></li>
+                    </ul>
 
                 </li>
 
