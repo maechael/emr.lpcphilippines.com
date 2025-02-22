@@ -31,6 +31,18 @@
 
                 </li>
 
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-lock-line"></i>
+                        <span>Security</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+
+                        <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
+                        <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                    </ul>
+                </li>
+                @can('view_any_patient_list', App\Models\Permission::find(1))
                 <li class="menu-title">Patient Section</li>
                 <li>
                     <a href="{{ route('patient-list.index') }}" class="waves-effect">
@@ -39,6 +51,9 @@
                     </a>
 
                 </li>
+                @endcan
+
+                @can('view_doctor_section', App\Models\Permission::find(1))
 
                 <li class="menu-title">Doctor Section</li>
                 <li>
@@ -53,6 +68,7 @@
 
                 </li>
 
+
                 <li>
 
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -64,7 +80,7 @@
                     </ul>
 
                 </li>
-
+                @endcan
 
             </ul>
         </div>

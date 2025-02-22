@@ -5,7 +5,9 @@ use App\Http\Controllers\LabResultsController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\PatientListController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\VitalSignController;
 use App\Models\Specialization;
@@ -67,6 +69,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('/medical_record', MedicalRecordController::class);
     Route::post('/get-medical-assesment-table', [MedicalRecordController::class, 'getMedicalAssesmentTable'])->name('get-medical-assesment-table');
     Route::get('/get-latest-medical-assesment/{id}', [MedicalRecordController::class, 'getLatestMedicalAssesment'])->name('get-latest-medical-assesment');
+
+
+
+    Route::prefix('/admin')->name('admin.')->group(function () {
+        Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
+        Route::resource('/permissions', PermissionController::class)->except(['update']);
+        Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
+        Route::resource('/roles', RoleController::class);
+    });
 });
 
 require __DIR__ . '/auth.php';
