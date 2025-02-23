@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DoctorProfile;
+use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
 use App\Models\Specialization;
 use Carbon\Carbon;
@@ -84,7 +85,8 @@ class PatientListController extends Controller
         $patientProfile = PatientProfile::find($id);
         $patientProfile['age'] = Carbon::parse($patientProfile->birthdate)->age;
         $specializations = Specialization::orderBy('name')->get();
-        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations'));
+        $logs = PatientAuditLogs::orderBy('created_at')->get();
+        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs'));
     }
 
     /**
@@ -191,17 +193,18 @@ class PatientListController extends Controller
                 })
                 ->addColumn('firstname', function ($data) {
                     $age = Carbon::parse($data->birthdate)->age;
-                    if ($data->is_pwd &&  $age >= 65) {
-                        $firstname =  `$data->firstname(senior)`;
-                    } else if ($data->is_pwd == true) {
-                        $firstname =  `$data->firstname(pwd)`;
+
+                    if ($data->is_pwd && $age >= 65) {
+                        $firstname = $data->firstname . ' (senior)';
+                    } elseif ($data->is_pwd) {
+                        $firstname = $data->firstname . ' (pwd)';
                     } else {
-                        $firstname =  `$data->firstname`;
+                        $firstname = $data->firstname;
                     }
 
-
-                    return  $data->firstname;
+                    return $firstname;
                 })
+
                 ->addColumn('age', function ($data) {
                     return Carbon::parse($data->birthdate)->age;
                 })

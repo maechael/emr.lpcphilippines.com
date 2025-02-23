@@ -3,16 +3,22 @@
 
     <div data-simplebar class="h-100">
 
+        @php
+        $user = Auth::user();
+        $id = $user->id;
+        $adminData = App\Models\User::find($id);
+        $userProfile = $user->userProfile;
+        @endphp
 
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
-                <img src="{{ asset('backend/assets/images/users/Elchico(256x256).png') }}" alt=""
+                <img src="{{ asset($userProfile->media->filepath) }}" alt=""
                     class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">Maechael Elchico</h4>
-                <p class="mb-0"><em>Web Developer</em></p>
+                <p class="mb-0"><em>{{ $userProfile->position }}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
                     Online</span>
             </div>
@@ -37,11 +43,14 @@
                         <span>Security</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-
+                        <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                        <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
                         <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
                         <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
                     </ul>
                 </li>
+
+
                 @can('view_any_patient_list', App\Models\Permission::find(1))
                 <li class="menu-title">Patient Section</li>
                 <li>

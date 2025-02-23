@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\DoctorProfile;
 use App\Models\MedicalRecord;
+use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -55,6 +57,14 @@ class MedicalRecordController extends Controller
 
             $medicalRecord->fill($data);
             $medicalRecord->save();
+
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $medicalRecord->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Logs Medical Record';
+            $patientAuditLogs->save();
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -123,6 +133,13 @@ class MedicalRecordController extends Controller
 
             $medicalRecord->fill($data);
             $medicalRecord->save();
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $medicalRecord->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Updated Medical Record';
+            $patientAuditLogs->save();
+
             DB::commit();
             return response()->json([
                 'status' => 'success',

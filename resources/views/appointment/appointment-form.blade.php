@@ -142,5 +142,12 @@
             });
         });
 
+        $('#patientAppointmentModal').on('hidden.bs.modal', function() {
+            $('#patientAppointmentForm')[0].reset(); // Reset the form
+            $('#doctor_profile_id').val(''); // Clear doctor selection
+            $('#availableDoctorDiv').attr('hidden', true); // Hide doctor dropdown
+            $('#appointment_action_button').val('Submit'); // Hide doctor dropdown
+        });
+
     });
 </script>

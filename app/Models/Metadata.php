@@ -23,4 +23,9 @@ class Metadata extends Model
     {
         return $this->hasMany(LabResults::class, 'metadata_id');
     }
+
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class, 'media_id');
+    }
 }

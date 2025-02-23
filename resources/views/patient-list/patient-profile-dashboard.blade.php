@@ -23,6 +23,9 @@
                     <div class="tab-pane fade" id="medicalRecords" role="tabpanel">
                         @include('medical-records.index', compact('patientProfile'))
                     </div>
+                    <div class="tab-pane fade" id="activityLogs" role="tabpanel">
+                        @include('patient-list.activity-logs', compact('patientProfile', 'logs'))
+                    </div>
 
                 </div>
             </div>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\PatientAppointment;
+use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -47,6 +49,14 @@ class PatientAppointmentController extends Controller
             $patientAppointment = new PatientAppointment();
             $patientAppointment->fill($data);
             $patientAppointment->save();
+
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $patientAppointment->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Patient Set Appointement';
+            $patientAuditLogs->save();
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -116,6 +126,13 @@ class PatientAppointmentController extends Controller
             $patientAppointment = PatientAppointment::find($id);
             $patientAppointment->fill($data);
             $patientAppointment->save();
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $patientAppointment->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Updated Patient Appointement';
+            $patientAuditLogs->save();
+
             DB::commit();
             return response()->json([
                 'status' => 'success',

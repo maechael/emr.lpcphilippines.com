@@ -43,4 +43,9 @@ class PatientProfile extends Model
     {
         return $this->hasMany(MedicalRecord::class, 'patient_profile_id');
     }
+
+    public function patientAuditLog()
+    {
+        return $this->hasMany(PatientAuditLogs::class, 'patient_id');
+    }
 }

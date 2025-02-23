@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\LabResults;
 use App\Models\Metadata;
+use App\Models\PatientAuditLogs;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
@@ -69,6 +71,13 @@ class LabResultsController extends Controller
             $labResult = new LabResults();
             $labResult->fill($data);
             $labResult->save();
+
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $labResult->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Uploaded Lab Results';
+            $patientAuditLogs->save();
 
             DB::commit();
             return response()->json([

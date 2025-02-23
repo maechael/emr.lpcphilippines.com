@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
 use App\Models\VitalSign;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -48,6 +50,12 @@ class VitalSignController extends Controller
             $vitalSign = new VitalSign();
             $vitalSign->fill($data);
             $vitalSign->save();
+
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $vitalSign->patient_profile_id;
+            $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
+            $patientAuditLogs->changes = 'Logs Vital Sign';
+            $patientAuditLogs->save();
 
             DB::commit();
             return response()->json([

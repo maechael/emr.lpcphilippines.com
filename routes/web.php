@@ -9,6 +9,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VitalSignController;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Route;
@@ -72,11 +74,20 @@ Route::middleware('auth')->group(function () {
 
 
 
+
+    //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
         Route::resource('/permissions', PermissionController::class)->except(['update']);
         Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
         Route::resource('/roles', RoleController::class);
+
+        Route::resource('/users', UserController::class)->except(['update']);
+        Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+
+        Route::resource('/user-profiles', UserProfileController::class)->except('update');
+        Route::post('/user-profiles/update', [UserProfileController::class, 'update'])->name('user-profiles.update');
+        Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
     });
 });
 
