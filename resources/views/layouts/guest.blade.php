@@ -12,12 +12,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
 
-    <!-- <link rel="stylesheet" href="{{ asset('backend/assets/build/css/app.css') }}">
 
-    <script src="{{ asset('backend/assets/build/js/app.js') }}" defer></script> -->
+
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
