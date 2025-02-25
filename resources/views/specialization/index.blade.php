@@ -54,6 +54,12 @@
             $('#specializationModal').modal('show');
         })
 
+        $('#specializationModal').on('hidden.bs.modal', function() {
+            console.log('specialization hide');
+            $('#specializationForm').trigger('reset');
+            $('#action_button').val('Submit');
+        });
+
         $(document).on('click', '.editButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');

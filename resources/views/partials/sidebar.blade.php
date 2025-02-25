@@ -55,7 +55,7 @@
                 <li class="menu-title">Patient Section</li>
                 <li>
                     <a href="{{ route('patient-list.index') }}" class="waves-effect">
-                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <i class="ri-dashboard-line"></i>
                         <span>Patient List</span>
                     </a>
 
