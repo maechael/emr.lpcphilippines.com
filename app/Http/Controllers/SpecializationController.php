@@ -152,7 +152,7 @@ class SpecializationController extends Controller
                         <i class="ri-more-line"></i>
                     </button>
                     <ul class="dropdown-menu">
-                    <li><button class="dropdown-item viewButton" id="' . $data->id . '"><i class="ri-eye-line"></i>View</button></li>
+                   
                         <li><button class="dropdown-item editButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
                     </ul>
                  </div>';
