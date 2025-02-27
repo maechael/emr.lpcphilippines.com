@@ -4,30 +4,54 @@
     .kanban-container {
         display: flex;
         gap: 20px;
+        justify-content: center;
+        padding: 20px;
     }
 
     .kanban-column {
         width: 30%;
         background: #f8f9fa;
-        padding: 10px;
-        border-radius: 5px;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .kanban-column h4 {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
     }
 
     .kanban-list {
-        min-height: 150px;
+        min-height: 200px;
         padding: 10px;
         background: #ffffff;
         border: 1px solid #ddd;
-        border-radius: 5px;
+        border-radius: 8px;
     }
 
     .kanban-item {
-        background: #007bff;
+        background: #4a90e2;
+        /* Softer blue */
         color: white;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-radius: 8px;
         cursor: grab;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .kanban-item:hover {
+        transform: scale(1.03);
+    }
+
+    .task-desc {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-top: 5px;
     }
 </style>
 <div class="page-content">
@@ -155,6 +179,8 @@
                 document.getElementById("cancelled-task"),
                 document.getElementById("complete-task")
             ]).on("drop", function(el, target) {
+
+
                 let taskId = $(el).data("id"); // Get task ID from data attribute
                 let newStatus = target.id.replace("-task", ""); // Extract status from ID
 

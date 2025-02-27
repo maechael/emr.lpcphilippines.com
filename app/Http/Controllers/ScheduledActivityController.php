@@ -104,7 +104,7 @@ class ScheduledActivityController extends Controller
                     'id' => $patientAppointment->id,
                     'name' => 'Appointment',
                     'date' => $patientAppointment->appointment_date,
-                    'type' => 'callback',
+                    'type' => 'appointmemnt',
                     'description' => "Patient" . ' ' . $patientFullName . 'Appointment To Dr.' . $doctorFullName,
                     'color' => '#28a745' // Green for callbacks
                 ];
@@ -140,7 +140,7 @@ class ScheduledActivityController extends Controller
                     'id' => $patientAppointment->id,
                     'name' => 'Appointment',
                     'date' => $patientAppointment->appointment_date,
-                    'type' => 'callback',
+                    'type' => 'appointmemnt',
                     'description' => "Patient" . ' ' . $patientFullName . ' ' . 'Appointment To Dr.' . $doctorFullName,
                     'color' => '#28a745', // Green for callbacks
                     'status' => $patientAppointment->status,
