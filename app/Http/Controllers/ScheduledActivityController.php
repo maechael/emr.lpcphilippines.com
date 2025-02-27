@@ -100,12 +100,13 @@ class ScheduledActivityController extends Controller
                 $doctorProfile = DoctorProfile::find($patientAppointment->doctor_profile_id);
                 $patientFullName = $patientProfile->firstname . ' ' . $patientProfile->lastname;
                 $doctorFullName =  $doctorProfile->firstname . ' ' . $doctorProfile->lastname;
+                $appointmentTime = date('h:i A', strtotime($patientAppointment->appointment_date)); // Format time
                 $data[] = [
                     'id' => $patientAppointment->id,
                     'name' => 'Appointment',
                     'date' => $patientAppointment->appointment_date,
                     'type' => 'appointmemnt',
-                    'description' => "Patient" . ' ' . $patientFullName . 'Appointment To Dr.' . $doctorFullName,
+                    'description' => "Patient " . $patientFullName . " has an appointment with Dr. " . $doctorFullName . " at " . $appointmentTime . ".",
                     'color' => '#28a745' // Green for callbacks
                 ];
             }
@@ -136,6 +137,7 @@ class ScheduledActivityController extends Controller
                 $doctorProfile = DoctorProfile::find($patientAppointment->doctor_profile_id);
                 $patientFullName = $patientProfile->firstname . ' ' . $patientProfile->lastname;
                 $doctorFullName =  $doctorProfile->firstname . ' ' . $doctorProfile->lastname;
+
                 $data[] = [
                     'id' => $patientAppointment->id,
                     'name' => 'Appointment',

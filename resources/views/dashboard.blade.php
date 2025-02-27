@@ -147,11 +147,17 @@
                     $(".kanban-list").empty(); // Clear lists before adding items
 
                     data.data.forEach(task => {
+                        let formattedDate = new Date(task.date).toLocaleDateString(); // Format date
+                        let formattedTime = new Date(task.date).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }); // Format time
                         let taskElement = `
-        <div class="kanban-item" data-id="${task.id}">
-            <strong>${task.name}</strong>
-            <p class="task-desc">${task.description || 'No description available'}</p>
-        </div>`;
+                        <div class="kanban-item" data-id="${task.id}">
+                         <strong>${task.name}</strong>
+                         <p class="task-desc">${task.description || 'No description available'}</p>
+                          <p class="task-time"><i class="far fa-calendar-alt"></i> ${formattedDate} | <i class="far fa-clock"></i> ${formattedTime}</p>
+                        </div>`;
                         $("#" + task.status.toLowerCase() + "-task").append(taskElement);
                     });
 
