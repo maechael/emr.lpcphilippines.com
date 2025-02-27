@@ -9,6 +9,7 @@ use App\Http\Controllers\PatientListController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ScheduledActivityController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfileController;
@@ -86,8 +87,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-latest-medical-assesment/{id}', [MedicalRecordController::class, 'getLatestMedicalAssesment'])->name('get-latest-medical-assesment');
 
 
-
-
+    //scheduled activity route
+    Route::resource('/scheduled-activity', ScheduledActivityController::class);
+    Route::get('/get-scheduled-activity', [ScheduledActivityController::class, 'getScheduledActivity'])->name('get-scheduled-activity');
+    Route::get('/scheduled-activity-kanban', [ScheduledActivityController::class, 'scheduledActivityKanban'])->name('scheduled-activity-kanban');
+    Route::post('/update-task-kanban', [ScheduledActivityController::class, 'updateTaskKanban'])->name('update-task-kanban');
     //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');

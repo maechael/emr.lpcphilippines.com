@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // $this->call(RoleSeeder::class);
-        // $this->call(UserSeeder::class);
-        // $this->call(PermissionSeeder::class);
-        // $this->call(RolePermissionSeeder::class);
-        // $this->call(create_user_profile_seeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(RolePermissionSeeder::class);
+        $this->call(create_user_profile_seeder::class);
         $this->call(PatientProfileFactorySeeder::class);
     }
 }

@@ -69,6 +69,7 @@
 </ul>
 
 @include('patient-list.vital-sign-form')
+@include('patient-list.patient-list-form-profile')
 <script>
     function getLatestVitalSign(patientProfileId) {
         $.ajax({
@@ -129,6 +130,42 @@
             $('#vitalSignForm').trigger('reset');
             $('#action_button').val('Submit');
         });
+
+        $('#editGeneralInformationButton').on('click', function(e) {
+            e.preventDefault();
+            var id = '{{$patientProfile->id}}';
+            console.log(id);
+            $.ajax({
+                url: "/patient-list/" + id + "/edit",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    $('#firstname').val(data.data.firstname);
+                    $('#lastname').val(data.data.lastname);
+                    $('#birthdate').val(data.data.birthdate);
+                    $('#contact_number').val(data.data.contact_number);
+                    if (data.data.is_pwd == 1) {
+                        $('#pwdNumberDiv').removeAttr('hidden'); // Show PWD number field
+                        $('#is_pwd').prop('checked', true); // Correctly set the checkbox
+                        $('#pwd_number').val(data.data.pwd_number);
+                    } else {
+                        $('#pwdNumberDiv').attr('hidden', true); // Hide PWD number field
+                        $('#is_pwd').prop('checked', false); // Uncheck if not PWD
+                    }
+                    $('#address').val(data.data.address);
+                    $('#hidden_id').val(data.data.id);
+                    $('#action_button').val('Update');
+                    $('#dataModal').modal('show');
+                },
+                error: function(data) {
+
+                },
+            });
+        });
+
 
     });
 </script>

@@ -13,13 +13,13 @@
                         <div class="col-6">
                             <div class="form-group mb-2">
                                 <label for="chief_complaint">Chief Complaint:</label>
-                                <textarea class="form-control" rows="5" id="chief_complaint" name="chief_complaint">{!! nl2br(e($medicalRecord->chief_complaint)) !!}</textarea>
+                                <textarea class="form-control" rows="5" id="chief_complaint" name="chief_complaint">{{ $medicalRecord->chief_complaint }}</textarea>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group mb-2">
                                 <label for="assesment" class="form-label">Assesment:</label>
-                                <textarea class="form-control" rows="5" id="assesment" name="assesment">{!! nl2br(e($medicalRecord->assesment)) !!}</textarea>
+                                <textarea class="form-control" rows="5" id="assesment" name="assesment">{{ $medicalRecord->assesment }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -27,13 +27,13 @@
                         <div class="col-6">
                             <div class="form-group mb-2">
                                 <label for="treatment_plan" class="form-label">Treatment Plan:</label>
-                                <textarea class="form-control" rows="5" id="treatment_plan" name="treatment_plan">{!! nl2br(e($medicalRecord->treatment_plan)) !!}</textarea>
+                                <textarea class="form-control" rows="5" id="treatment_plan" name="treatment_plan">{{ $medicalRecord->treatment_plan }}</textarea>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group mb-2">
                                 <label for="notes" class="form-label">Notes:</label>
-                                <textarea class="form-control" rows="5" id="notes" name="notes">{!! nl2br(e($medicalRecord->notes)) !!}</textarea>
+                                <textarea class="form-control" rows="5" id="notes" name="notes">{{ $medicalRecord->notes }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <div></div>
                         <div>
-                            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" id="closeMedicalRecordButton">Close</button>
                             <input type="submit" name="action_button" id="action_button" value="Update"
                                 class="btn btn-primary ladda-button patientlistButton" data-style="expand-right">
                         </div>
@@ -97,8 +97,7 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        // $('#doctorFormModal').modal('hide');
-                        // $('.doctorListTable').DataTable().ajax.reload();
+
                     });
                 },
                 error: function(data) {
@@ -110,6 +109,10 @@
                     });
                 }
             });
+        });
+
+        $('#closeMedicalRecordButton').on('click', function(e) {
+            window.history.back();
         });
     });
 </script>

@@ -54,7 +54,7 @@
                     <div class="mb-2 d-flex justify-content-between align-items-center">
                         <div></div>
                         <div>
-                            <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary " id="closeMedicalRecordButton">Close</button>
                             <input type="submit" name="action_button" id="action_button" value="Submit"
                                 class="btn btn-primary ladda-button patientlistButton" data-style="expand-right">
                         </div>
@@ -95,8 +95,8 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        // $('#doctorFormModal').modal('hide');
-                        // $('.doctorListTable').DataTable().ajax.reload();
+                        var id = $(this).attr('id');
+                        window.location.href = `{{ route('medical_record.edit',':id') }}`.replace(':id', data.data.id);
                     });
                 },
                 error: function(data) {
@@ -108,6 +108,10 @@
                     });
                 }
             });
+        });
+
+        $('#closeMedicalRecordButton').on('click', function(e) {
+            window.history.back();
         });
     });
 </script>

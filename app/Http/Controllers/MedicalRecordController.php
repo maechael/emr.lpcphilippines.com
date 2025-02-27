@@ -107,6 +107,19 @@ class MedicalRecordController extends Controller
         $medicalRecord = MedicalRecord::find($id);
         $doctorList = DoctorProfile::orderBy('lastname')->get();
         $patientProfile = $medicalRecord->patientProfile;
+
+        // Convert <br> to new lines while keeping intentional spacing
+        $fields = ['chief_complaint', 'assesment', 'treatment_plan', 'notes'];
+
+        foreach ($fields as $field) {
+            if (!empty($medicalRecord->$field)) {
+                // Convert <br> to new lines but preserve double spacing
+                $medicalRecord->$field = preg_replace('/(<br\s*\/?>\s*){2,}/', "\n\n", $medicalRecord->$field); // Keep intentional double spaces
+                $medicalRecord->$field = preg_replace('/(<br\s*\/?>\s*)/', "\n", $medicalRecord->$field); // Convert single <br> to \n
+            }
+        }
+
+
         return view('medical-records.update-medical-assesment-form', compact('doctorList', 'medicalRecord', 'patientProfile'));
     }
 
@@ -208,7 +221,7 @@ class MedicalRecordController extends Controller
                 <ul class="dropdown-menu">
               
                     <li><button class="dropdown-item editMedicalAssesmentButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
-                    <li><button class="dropdown-item deleteButton" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+                 
                 </ul>
              </div>';
                 return $dropdown;

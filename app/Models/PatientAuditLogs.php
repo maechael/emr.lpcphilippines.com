@@ -25,6 +25,6 @@ class PatientAuditLogs extends Model
 
     public function userProfile()
     {
-        return $this->belongsTo(userProfile::class, 'user_profile_id');
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
     }
 }

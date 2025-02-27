@@ -180,9 +180,9 @@ class PatientAppointmentController extends Controller
                     <i class="ri-more-line"></i>
                 </button>
                 <ul class="dropdown-menu">
-                <li><button class="dropdown-item viewButton" id="' . $data->id . '"><i class="ri-eye-line"></i>View</button></li>
+                
                     <li><button class="dropdown-item editAppointButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
-                    <li><button class="dropdown-item deleteButton" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+                   
                 </ul>
              </div>';
                     return $dropdown;

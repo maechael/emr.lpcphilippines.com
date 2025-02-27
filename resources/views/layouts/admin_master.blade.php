@@ -14,7 +14,7 @@
 
     {{-- header css --}}
 
-    @include('partials.head')
+
 
     <!--Jquery extension -->
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
@@ -71,6 +71,8 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/libs/@fullcalendar/timegrid/main.min.css') }}"
         type="text/css">
 
+    <!-- dragula -->
+    <link href="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.css" rel="stylesheet" type="text/css" />
     @include('partials.head')
 
     <!-- JAVASCRIPT -->
@@ -89,7 +91,8 @@
     <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
 
-
+    <!-- dragula -->
+    <script src="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.js"></script>
 
 </head>
 
@@ -167,6 +170,8 @@
 
 <!-- Datatable init js -->
 <script src="{{ asset('backend/assets/js/pages/datatables.init.js') }}"></script>
+
+
 
 <script src="{{ asset('backend/assets/libs/evo-calendar/js/evo-calendar.js') }}"></script>
 
