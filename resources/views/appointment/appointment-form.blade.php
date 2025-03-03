@@ -46,6 +46,27 @@
                         </div>
 
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label class="form-label">Consultation Type:</label>
+                            <select class="form-select" name="consultation_type" id="consultation_type">
+                                <option value="">Select type</option>
+                                <option value="Physical">Physical</option>
+                                <option value="Online">Online</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="row" id="onlineDetails" hidden>
+                        <div class="col-6">
+                            <label class="form-label">Zoom Link:</label>
+                            <input type="url" class="form-control" name="zoom_link" placeholder="Enter Zoom Meeting Link">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Date & Time:</label>
+                            <input type="datetime-local" class="form-control" name="consultation_datetime">
+                        </div>
+                    </div>
 
                 </div> <!-- Close modal-body here -->
 
@@ -86,6 +107,15 @@
     }
 
     $(document).ready(function() {
+        $("#consultation_type").on("change", function() {
+            console.log($(this).val());
+            if ($(this).val() === "Online") {
+                $("#onlineDetails").attr('hidden', false); // Show fields
+            } else {
+                $("#onlineDetails").attr('hidden', true); // Show fields
+            }
+        });
+
         $('#appointment_date, select[name="specialization_id"]').on('change', function() {
             let date = $('#appointment_date').val();
             let specialization = $('select[name="specialization_id"]').val();

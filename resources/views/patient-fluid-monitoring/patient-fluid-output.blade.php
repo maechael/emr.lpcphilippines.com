@@ -5,20 +5,20 @@
             <div class="card-body">
                 <div class="mb-2 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5>Lab Results</h5>
+                        <h5>Log Fluid Output</h5>
                     </div>
                     <button class="btn btn-success"
-                        id="uploadLabResults">
-                        UPLOAD</button>
+                        id="addFluidOutput">
+                        ADD</button>
                 </div>
                 <div>
-                    <table id="labResultTable" class="table table-bordered dt-responsive  labResultTable"
+                    <table id="fluidOutputTable" class="table table-bordered dt-responsive fluidOutputTable"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%; ">
                         <thead class="table-light">
                             <tr>
-                                <th>Type</th>
-                                <th>File</th>
                                 <th>Date</th>
+                                <th>Time</th>
+                                <th>Amount</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,45 +28,68 @@
         </div>
     </div>
 </div>
-@include('lab-results.lab-result-form', compact('patientProfile', 'labTestTypes'))
+@include('patient-fluid-monitoring.patient-fluid-output-form', compact('patientProfile'))
 <script>
     $(document).ready(function() {
-        $('#uploadLabResults').on('click', function() {
-            $('#labResultsModal').modal('show');
+        $('#addFluidOutput').on('click', function() {
+            $('#fluidOutputModal').modal('show');
         });
 
-        $('.labResultTable').DataTable({
+        $('.fluidOutputTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('get-lab-results-table') }}",
+                url: "{{ route('get-patient-fluid-output-table') }}",
                 type: "POST",
                 data: function(d) {
                     d.patient_profile_id = "{{$patientProfile->id}}"; // Assuming there's an input or hidden field with this ID
                 }
             },
             columns: [{
-                    data: 'type',
-                    name: 'type'
+                    data: 'date',
+                    name: 'date'
                 },
                 {
-                    data: 'file',
-                    name: 'file'
+                    data: 'time',
+                    name: 'time'
                 },
                 {
-                    data: 'date_uploaded',
-                    name: 'date_uploaded'
+                    data: 'amount',
+                    name: 'amount'
                 },
                 {
                     data: 'action',
                     name: 'action'
                 }
-
             ]
         });
 
-        $(document).on('click', '.deleteFileButton', function() {
-            var deleteFileId = $(this).attr('id');
+        $(document).on('click', '.editFluidOutput', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            console.log(id);
+            $.ajax({
+                url: "/fluid-output/" + id + "/edit",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                dataType: "json",
+                success: function(data) {
+                    console.log(data.data.time_date);
+                    $('#time_date_output').val(data.data.time_date);
+                    $('#amount_output').val(data.data.amount);
+                    $('#hidden_id_output').val(data.data.id);
+                    $('#fluid_output_action_button').val('Update');
+                    $('#fluidOutputModal').modal('show');
+                },
+                error: function(data) {
+
+                },
+            });
+        });
+
+        $(document).on('click', '.deleteFluidOutput', function(e) {
+            var deleteId = $(this).attr('id');
             Swal.fire({
                 title: 'Confirm File Removal',
                 text: 'Are you sure you want to remove this file?',
@@ -81,7 +104,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: `{{ route('lab-results.destroy',':id') }}`.replace(':id', deleteFileId),
+                        url: `{{ route('fluid-output.destroy',':id') }}`.replace(':id', deleteId),
                         type: 'DELETE',
 
                         dataType: "json",
@@ -92,8 +115,7 @@
                                 icon: 'success',
                                 confirmButtonText: 'Ok'
                             }).then((result) => {
-                                // $('#dataModal').modal('hide');
-                                $('.labResultTable').DataTable().ajax.reload();
+                                $('.fluidOutputTable').DataTable().ajax.reload();
                             });
                         },
                         error: function(data) {
@@ -109,6 +131,5 @@
 
             });
         });
-
     });
 </script>

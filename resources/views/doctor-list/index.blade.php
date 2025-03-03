@@ -77,7 +77,7 @@
         $('#doctorFormModal').on('hide.bs.modal', function() {
             $('#doctorForm').trigger('reset');
             $('#scheduleContainer').html(`
-        <div class="row mb-2 schedule-item align-items-center">
+         <div class="row mb-2 schedule-item align-items-center">
             <div class="col-md-4">
                 <div class="form-group mb-2">
                     <label class="form-label">Day of Week:</label>
@@ -109,7 +109,7 @@
                 <button type="button" class="btn btn-success add-schedule">+</button>
                 <button type="button" class="btn btn-danger remove-schedule">-</button>
             </div>
-        </div>`);
+         </div>`);
             $('#action_button').val('Submit');
         });
 

@@ -46,6 +46,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#medication" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Medication
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#fluidMonitoring" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Fluid Monitoring
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#activityLogs" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
                     Activity Logs

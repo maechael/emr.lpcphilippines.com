@@ -79,7 +79,6 @@
             },
             dataType: "json",
             success: function(data) {
-                console.log(data);
                 $('#blodPressure').text(`${data.data.blood_pressure} mmHg`);
                 $('#temperature').text(`${data.data.temperature}°C`);
                 $('#heartRate').text(`${data.data.heart_rate}BPM`);
@@ -100,7 +99,6 @@
             },
             dataType: "json",
             success: function(data) {
-                console.log(data);
                 $('#checkBy').text(`Dr. ${data.data.doctor_profile.firstname} ${data.data.doctor_profile.lastname}`)
                 $('#chiefComplaint').html(`${data.data.chief_complaint.replace(/\n/g, '<br>')}`);
                 $('#assesment').html(`${data.data.assesment.replace(/\n/g, '<br>')}`);

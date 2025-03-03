@@ -27,4 +27,9 @@ class PatientAppointment extends Model
     {
         return $this->belongsTo(DoctorProfile::class, 'doctor_profile_id');
     }
+
+    public function zoomConsultation()
+    {
+        return $this->hasOne(ZoomConsultation::class, 'patient_appointment_id');
+    }
 }

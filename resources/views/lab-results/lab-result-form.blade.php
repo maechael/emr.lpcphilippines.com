@@ -10,8 +10,14 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <div class="form-group mb-2">
-                                <label for="type" class="form-label">Type:</label>
-                                <input type="text" class="form-control" id="type" name="type" placeholder="Type">
+                                <label for="type" class="form-label">Type Dropdown:</label>
+                                <select class="select2 form-control select2-multiple" id="type" name="type"
+                                    data-placeholder="Choosee..." multiple="multiple">
+                                    <option value="">Select Options..</option>
+                                    @foreach($labTestTypes as $type)
+                                    <option value="{{$type->name}}">{{$type->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-6">
@@ -38,19 +44,19 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true,
+            tags: true,
+            dropdownParent: $('#labResultsModal') // Ensure Select2 dropdown stays inside modal
+        });
+
         $('#labResultForm').on('submit', function(e) {
             e.preventDefault();
-            // var hiddenId = $('#patient_profile_id').val();
-            // var url = $('#lab_result_action_button').val() == 'Update' ? `{{ route('lab-results.update',':id') }}`.replace(':id', hiddenId) : "{{ route('lab-results.store') }}";
-            // var method = $('#lab_result_action_button').val() == 'Update' ? 'PUT' : 'POST';
             var formData = new FormData(this);
-            // console.log('url', hiddenId);
-            // if (method === 'PUT') {
-            //     formData.append('_method', 'PUT');
-            // }
+            formData.append('types', $('#type').val())
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -1,24 +1,25 @@
-<div class="row">
-    <div class="col-12">
-        <div class="card"
-            style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+@extends('layouts.admin_master')
+@section('admin')
+<div class="page-content">
+    <div class="container-fluid">
+        <div class="card">
             <div class="card-body">
                 <div class="mb-2 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5>Lab Results</h5>
+                        <h5>Lab Result Type</h5>
                     </div>
                     <button class="btn btn-success"
-                        id="uploadLabResults">
-                        UPLOAD</button>
+                        id="addLabResultType">
+                        ADD</button>
                 </div>
                 <div>
-                    <table id="labResultTable" class="table table-bordered dt-responsive  labResultTable"
+                    <table id="labResultTypeTable" class="table table-bordered dt-responsive labResultTypeTable"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%; ">
                         <thead class="table-light">
                             <tr>
-                                <th>Type</th>
-                                <th>File</th>
-                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Created_at</th>
+                                <th>Updated_at</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,34 +29,27 @@
         </div>
     </div>
 </div>
-@include('lab-results.lab-result-form', compact('patientProfile', 'labTestTypes'))
+@include('lab-result-type.lab-result-form');
 <script>
-    $(document).ready(function() {
-        $('#uploadLabResults').on('click', function() {
-            $('#labResultsModal').modal('show');
-        });
-
-        $('.labResultTable').DataTable({
+    $(document).ready(function(e) {
+        $('.labResultTypeTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('get-lab-results-table') }}",
+                url: "{{ route('get-lab-result-type-table') }}",
                 type: "POST",
-                data: function(d) {
-                    d.patient_profile_id = "{{$patientProfile->id}}"; // Assuming there's an input or hidden field with this ID
-                }
             },
             columns: [{
-                    data: 'type',
-                    name: 'type'
+                    data: 'name',
+                    name: 'name'
                 },
                 {
-                    data: 'file',
-                    name: 'file'
+                    data: 'formatted_created_at',
+                    name: 'formatted_created_at'
                 },
                 {
-                    data: 'date_uploaded',
-                    name: 'date_uploaded'
+                    data: 'formatted_updated_at',
+                    name: 'formatted_updated_at'
                 },
                 {
                     data: 'action',
@@ -65,8 +59,41 @@
             ]
         });
 
-        $(document).on('click', '.deleteFileButton', function() {
-            var deleteFileId = $(this).attr('id');
+        $('#addLabResultType').on('click', function() {
+            $('#labResultTypeModal').modal('show');
+        })
+
+        $('#labResultTypeModal').on('hidden.bs.modal', function() {
+            $('#labResultTypeForm').trigger('reset');
+            $('#action_button').val('Submit');
+        });
+
+        $(document).on('click', '.editButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            console.log(id);
+            $.ajax({
+                url: "/lab-result-type/" + id + "/edit",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    $('#name').val(data.data.name);
+                    $('#hidden_id').val(data.data.id);
+                    $('#action_button').val('Update');
+                    $('#labResultTypeModal').modal('show');
+                },
+                error: function(data) {
+
+                },
+            });
+        });
+
+
+        $(document).on('click', '.deleteButton', function(e) {
+            var deleteId = $(this).attr('id');
             Swal.fire({
                 title: 'Confirm File Removal',
                 text: 'Are you sure you want to remove this file?',
@@ -81,7 +108,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: `{{ route('lab-results.destroy',':id') }}`.replace(':id', deleteFileId),
+                        url: `{{ route('lab-result-type.destroy',':id') }}`.replace(':id', deleteId),
                         type: 'DELETE',
 
                         dataType: "json",
@@ -92,8 +119,8 @@
                                 icon: 'success',
                                 confirmButtonText: 'Ok'
                             }).then((result) => {
-                                // $('#dataModal').modal('hide');
-                                $('.labResultTable').DataTable().ajax.reload();
+                                $('#labResultTypeModal').modal('hide');
+                                $('.labResultTypeTable').DataTable().ajax.reload();
                             });
                         },
                         error: function(data) {
@@ -112,3 +139,5 @@
 
     });
 </script>
+
+@endsection

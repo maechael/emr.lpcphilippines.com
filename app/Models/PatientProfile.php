@@ -48,4 +48,19 @@ class PatientProfile extends Model
     {
         return $this->hasMany(PatientAuditLogs::class, 'patient_id');
     }
+
+    public function patientMedication()
+    {
+        return $this->hasMany(PatientMedication::class, 'patient_profile_id');
+    }
+
+    public function fluidIntake()
+    {
+        return $this->hasMany(FluidIntake::class, 'patient_profile_id');
+    }
+
+    public function outPut()
+    {
+        return $this->hasMany(FluidOutput::class, 'patient_profile_id');
+    }
 }

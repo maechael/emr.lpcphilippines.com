@@ -19,6 +19,7 @@
                                 <th>Schedule</th>
                                 <th>Doctor</th>
                                 <th>Status</th>
+                                <th>Type</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -41,6 +42,9 @@
             ajax: {
                 url: "{{ route('get-patient-appointment-profile-table') }}",
                 type: "POST",
+                data: function(d) {
+                    d.patient_profile_id = "{{$patientProfile->id}}"; // Assuming there's an input or hidden field with this ID
+                }
             },
             columns: [{
                     data: 'formatted_appointment_date',
@@ -53,6 +57,10 @@
                 {
                     data: 'status',
                     name: 'status'
+                },
+                {
+                    data: 'zoom_link_date',
+                    name: 'zoom_link_date',
                 },
                 {
                     data: 'action',

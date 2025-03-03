@@ -68,6 +68,8 @@ class LabResultsController extends Controller
 
             $data['metadata_id'] = $metadata->id;
 
+            $data['type'] = str_replace(',', ', ', $data['types']); // Ensure space after comma
+
             $labResult = new LabResults();
             $labResult->fill($data);
             $labResult->save();
@@ -160,7 +162,13 @@ class LabResultsController extends Controller
     public function getLabResultsTable(Request $request)
     {
         if ($request->ajax()) {
-            $data = LabResults::orderBy('created_at');
+            $query = LabResults::orderBy('created_at', 'desc');
+
+            if ($request->has('patient_profile_id')) {
+                $query->where('patient_profile_id', $request->patient_profile_id);
+            }
+
+            $data = $query->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('file', function ($data) {

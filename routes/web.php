@@ -2,10 +2,15 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorProfileController;
+use App\Http\Controllers\FluidIntakeController;
+use App\Http\Controllers\FluidOutputController;
+use App\Http\Controllers\LabResultController;
 use App\Http\Controllers\LabResultsController;
+use App\Http\Controllers\LabResultTypeController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\PatientListController;
+use App\Http\Controllers\PatientMedicationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -14,6 +19,7 @@ use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VitalSignController;
+use App\Models\PatientMedication;
 use App\Models\Specialization;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +98,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-scheduled-activity', [ScheduledActivityController::class, 'getScheduledActivity'])->name('get-scheduled-activity');
     Route::get('/scheduled-activity-kanban', [ScheduledActivityController::class, 'scheduledActivityKanban'])->name('scheduled-activity-kanban');
     Route::post('/update-task-kanban', [ScheduledActivityController::class, 'updateTaskKanban'])->name('update-task-kanban');
+
+    //lab result type
+    Route::resource('/lab-result-type', LabResultTypeController::class);
+    Route::post('/get-lab-result-type-table', [LabResultTypeController::class, 'getLabResultTypeTable'])->name('get-lab-result-type-table');
+
+
+    //patient medication 
+    Route::resource('/patient-medication', PatientMedicationController::class);
+    Route::post('/get-patient-medication-table', [PatientMedicationController::class, 'getPatientMedicationTable'])->name('get-patient-medication-table');
+
+
+    //patient fluid intake 
+    Route::resource('/fluid-intake', FluidIntakeController::class);
+    Route::post('/get-patient-fluid-intake-table', [FluidIntakeController::class, 'getPatientFluidIntakeTable'])->name('get-patient-fluid-intake-table');
+
+    //patient fluid intake 
+    Route::resource('/fluid-output', FluidOutputController::class);
+    Route::post('/get-patient-fluid-output-table', [FluidOutputController::class, 'getPatientFluidOutputTable'])->name('get-patient-fluid-output-table');
+
     //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {
         Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');

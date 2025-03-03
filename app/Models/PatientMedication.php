@@ -5,19 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MedicalRecord extends Model
+class PatientMedication extends Model
 {
     use HasFactory;
 
-    protected $table = "medical_record";
+    protected $table = "patient_medications";
 
     protected $fillable = [
         'patient_profile_id',
-        'doctor_profile_id',
-        'chief_complaint',
-        'assesment',
-        'treatment_plan',
-        'notes',
+        'medication_name',
+        'dosage',
+        'start_date',
+        'end_date'
     ];
 
     public function patientProfile()
@@ -25,8 +24,8 @@ class MedicalRecord extends Model
         return $this->belongsTo(PatientProfile::class, 'patient_profile_id');
     }
 
-    public function doctorProfile()
+    public function medicationSchedule()
     {
-        return $this->belongsTo(DoctorProfile::class, 'doctor_profile_id');
+        return $this->hasMany(MedicationSchedule::class, 'patient_medication_id');
     }
 }

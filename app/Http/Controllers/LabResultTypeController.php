@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DoctorProfile;
 use App\Models\LabResultType;
-use App\Models\MedicationSchedule;
-use App\Models\PatientAuditLogs;
-use App\Models\PatientProfile;
-use App\Models\Specialization;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
-class PatientListController extends Controller
+class LabResultTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,8 +18,7 @@ class PatientListController extends Controller
     public function index()
     {
         //
-
-        return view('patient-list.index');
+        return view('lab-result-type.index');
     }
 
     /**
@@ -50,23 +43,18 @@ class PatientListController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $patientProfile = new PatientProfile();
-            if (isset($data['is_pwd'])) {
-                $data['is_pwd'] = $data['is_pwd'] == 'on' ? 1 : 0;
-            } else {
-                $data['is_pwd'] =  0;
-            }
-            $patientProfile->fill($data);
-            $patientProfile->save();
+            $labResultType = new LabResultType();
+            $labResultType->fill($data);
+            $labResultType->save();
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'data' => $patientProfile,
-                'message' => "Patient Profile Successfully Added"
+                'data' => $labResultType,
+                'message' => "lab result type Successfully Added"
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('error on saving patient profile' . $e);
+            Log::info('error on saving lab result type' . $e);
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -82,14 +70,7 @@ class PatientListController extends Controller
      */
     public function show($id)
     {
-        $patientProfile = PatientProfile::find($id);
-        $patientProfile['age'] = Carbon::parse($patientProfile->birthdate)->age;
-        $specializations = Specialization::orderBy('name')->get();
-        $logs = $patientProfile->patientAuditLog()->orderBy('created_at')->get();
-        $labTestTypes = LabResultType::orderBy('name')->get();
-        $medicationSchedule = new MedicationSchedule();
-        $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
-        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions'));
+        //
     }
 
     /**
@@ -100,13 +81,13 @@ class PatientListController extends Controller
      */
     public function edit($id)
     {
+        //
         try {
-
-            $patientProfile = PatientProfile::find($id);
+            $labResultType = LabResultType::find($id);
             return response()->json([
                 'status' => 'success',
-                'data' => $patientProfile,
-                'message' => "Patient Profile Successfully Retrieved"
+                'data' => $labResultType,
+                'message' => "lab test type Successfully Retrieved"
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -129,27 +110,18 @@ class PatientListController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-
-            $patientProfile = PatientProfile::find($id);
-            if (isset($data['is_pwd'])) {
-                $data['is_pwd'] = $data['is_pwd'] == 'on' ? 1 : 0;
-            } else {
-                $data['is_pwd'] =  0;
-            }
-            $patientProfile->fill($data);
-
-            $patientProfile->save();
-
+            $labResultType = LabResultType::find($id);
+            $labResultType->fill($data);
+            $labResultType->save();
             DB::commit();
-
             return response()->json([
                 'status' => 'success',
-                'data' => $patientProfile,
-                'message' => "Patient Profile Successfully Updated"
+                'data' => $labResultType,
+                'message' => "lab result type Successfully Updated"
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('error on updating patient profile' . $e);
+            Log::info('error on updating lab result type' . $e);
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -169,13 +141,13 @@ class PatientListController extends Controller
         try {
             DB::beginTransaction();
 
-            $patientProfile = PatientProfile::find($id);
-            $patientProfile->delete();
+            $LabResultType = LabResultType::find($id);
+            $LabResultType->delete();
 
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => "Patient Profile Successfully Deleted"
+                'message' => "Lab Result type Successfully Deleted"
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -185,44 +157,29 @@ class PatientListController extends Controller
         }
     }
 
-    public function getPatientList(Request $request)
+    public function getLabResultTypeTable(Request $request)
     {
         if ($request->ajax()) {
-            $data = PatientProfile::orderBy('created_at');
+            $data = LabResultType::orderBy('created_at');
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('full_name', function ($data) {
-                    return $data->firstname . ' ' . $data->lastname;
-                })
-                ->addColumn('firstname', function ($data) {
-                    $age = Carbon::parse($data->birthdate)->age;
-
-                    if ($data->is_pwd && $age >= 65) {
-                        $firstname = $data->firstname . ' (senior)';
-                    } elseif ($data->is_pwd) {
-                        $firstname = $data->firstname . ' (pwd)';
-                    } else {
-                        $firstname = $data->firstname;
-                    }
-
-                    return $firstname;
-                })
-
-                ->addColumn('age', function ($data) {
-                    return Carbon::parse($data->birthdate)->age;
-                })
                 ->addColumn('action', function ($data) {
                     $dropdown = '<div class="btn-group">
                     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="ri-more-line"></i>
                     </button>
                     <ul class="dropdown-menu">
-                    <li><button class="dropdown-item viewButton" id="' . $data->id . '"><i class="ri-eye-line"></i>View</button></li>
                         <li><button class="dropdown-item editButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
                         <li><button class="dropdown-item deleteButton" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
                     </ul>
                  </div>';
                     return $dropdown;
+                })
+                ->addColumn('formatted_created_at', function ($data) {
+                    return $data->created_at->format('Y-m-d H:i:s'); // Customize format as needed
+                })
+                ->addColumn('formatted_updated_at', function ($data) {
+                    return $data->updated_at->format('Y-m-d H:i:s'); // Customize format as needed
                 })
                 ->rawColumns(['action'])
                 ->make(true);

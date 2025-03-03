@@ -46,12 +46,12 @@
                 type: "POST",
             },
             columns: [{
-                    data: 'firstname',
-                    name: 'firstname'
-                },
-                {
                     data: 'lastname',
                     name: 'lastname'
+                },
+                {
+                    data: 'firstname',
+                    name: 'firstname'
                 },
                 {
                     data: 'age',

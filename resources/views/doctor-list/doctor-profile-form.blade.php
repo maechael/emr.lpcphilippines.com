@@ -151,15 +151,22 @@
         $('#scheduleContainer').on('click', '.add-schedule', function() {
             let newRow = $(this).closest('.schedule-item').clone();
             newRow.find('input').val('');
-            if (!$('#action_button').val() == 'Update') {
-                newRow.find('.add-schedule').removeClass('btn-success add-schedule').addClass('btn-danger remove-schedule').text('Remove');
+
+            if ($('#action_button').val() !== 'Update') { // Fixing the condition check
+                newRow.find('.add-schedule')
+                    .removeClass('btn-success add-schedule')
+                    .addClass('btn-danger remove-schedule')
+                    .text('Remove');
             }
+
             $('#scheduleContainer').append(newRow);
         });
 
         $('#scheduleContainer').on('click', '.remove-schedule', function() {
             $(this).closest('.schedule-item').remove();
         });
+
+
 
     });
 </script>

@@ -5,20 +5,21 @@
             <div class="card-body">
                 <div class="mb-2 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5>Lab Results</h5>
+                        <h5>Log Fluid Intake</h5>
                     </div>
                     <button class="btn btn-success"
-                        id="uploadLabResults">
-                        UPLOAD</button>
+                        id="addFluidIntake">
+                        ADD</button>
                 </div>
                 <div>
-                    <table id="labResultTable" class="table table-bordered dt-responsive  labResultTable"
+                    <table id="fluidIntakeTable" class="table table-bordered dt-responsive fluidIntakeTable"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%; ">
                         <thead class="table-light">
                             <tr>
-                                <th>Type</th>
-                                <th>File</th>
                                 <th>Date</th>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Amount</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -28,45 +29,73 @@
         </div>
     </div>
 </div>
-@include('lab-results.lab-result-form', compact('patientProfile', 'labTestTypes'))
+@include('patient-fluid-monitoring.patient-fluid-intake-form', compact('patientProfile'))
 <script>
     $(document).ready(function() {
-        $('#uploadLabResults').on('click', function() {
-            $('#labResultsModal').modal('show');
-        });
-
-        $('.labResultTable').DataTable({
+        $('.fluidIntakeTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('get-lab-results-table') }}",
+                url: "{{ route('get-patient-fluid-intake-table') }}",
                 type: "POST",
                 data: function(d) {
                     d.patient_profile_id = "{{$patientProfile->id}}"; // Assuming there's an input or hidden field with this ID
                 }
             },
             columns: [{
-                    data: 'type',
-                    name: 'type'
+                    data: 'date',
+                    name: 'date'
                 },
                 {
-                    data: 'file',
-                    name: 'file'
+                    data: 'time',
+                    name: 'time'
                 },
                 {
-                    data: 'date_uploaded',
-                    name: 'date_uploaded'
+                    data: 'type_of_fluid',
+                    name: 'type_of_fluid'
+                },
+                {
+                    data: 'amount',
+                    name: 'amount'
                 },
                 {
                     data: 'action',
                     name: 'action'
                 }
-
             ]
         });
 
-        $(document).on('click', '.deleteFileButton', function() {
-            var deleteFileId = $(this).attr('id');
+        $('#addFluidIntake').on('click', function() {
+            $('#fluidIntakeModal').modal('show');
+        });
+
+        $(document).on('click', '.editFluidIntake', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            console.log(id);
+            $.ajax({
+                url: "/fluid-intake/" + id + "/edit",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                dataType: "json",
+                success: function(data) {
+                    console.log(data);
+                    $('#time_date').val(data.data.time_date);
+                    $('#amount').val(data.data.amount);
+                    $('#type_of_fluid').val(data.data.type_of_fluid);
+                    $('#hidden_id').val(data.data.id);
+                    $('#fluid_intake_action_button').val('Update');
+                    $('#fluidIntakeModal').modal('show');
+                },
+                error: function(data) {
+
+                },
+            });
+        });
+
+        $(document).on('click', '.deleteFluidIntake', function(e) {
+            var deleteId = $(this).attr('id');
             Swal.fire({
                 title: 'Confirm File Removal',
                 text: 'Are you sure you want to remove this file?',
@@ -81,7 +110,7 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: `{{ route('lab-results.destroy',':id') }}`.replace(':id', deleteFileId),
+                        url: `{{ route('fluid-intake.destroy',':id') }}`.replace(':id', deleteId),
                         type: 'DELETE',
 
                         dataType: "json",
@@ -92,8 +121,7 @@
                                 icon: 'success',
                                 confirmButtonText: 'Ok'
                             }).then((result) => {
-                                // $('#dataModal').modal('hide');
-                                $('.labResultTable').DataTable().ajax.reload();
+                                $('.fluidIntakeTable').DataTable().ajax.reload();
                             });
                         },
                         error: function(data) {
@@ -110,5 +138,5 @@
             });
         });
 
-    });
+    })
 </script>
