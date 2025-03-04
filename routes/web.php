@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorProfileController;
 use App\Http\Controllers\FluidIntakeController;
 use App\Http\Controllers\FluidOutputController;
+use App\Http\Controllers\LabImagingController;
 use App\Http\Controllers\LabResultController;
 use App\Http\Controllers\LabResultsController;
 use App\Http\Controllers\LabResultTypeController;
@@ -116,6 +117,12 @@ Route::middleware('auth')->group(function () {
     //patient fluid intake 
     Route::resource('/fluid-output', FluidOutputController::class);
     Route::post('/get-patient-fluid-output-table', [FluidOutputController::class, 'getPatientFluidOutputTable'])->name('get-patient-fluid-output-table');
+
+
+    //lab imaging route
+    Route::resource('/lab-imaging', LabImagingController::class);
+    Route::post('/get-lab-imaging-table', [LabImagingController::class, 'getLabImagingTable'])->name('get-lab-imaging-table');
+
 
     //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {

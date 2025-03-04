@@ -19,6 +19,7 @@
                     </div>
                     <div class="tab-pane fade" id="labResults" role="tabpanel">
                         @include('lab-results.index', compact('patientProfile', 'labTestTypes'))
+                        @include('lab-results.lab-imaging', compact('patientProfile', 'labTestTypes'))
                     </div>
                     <div class="tab-pane fade" id="medicalRecords" role="tabpanel">
                         @include('medical-records.index', compact('patientProfile'))

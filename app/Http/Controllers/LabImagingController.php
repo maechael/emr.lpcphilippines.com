@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LabResults;
+use App\Models\LabImaging;
 use App\Models\Metadata;
 use App\Models\PatientAuditLogs;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
-class LabResultsController extends Controller
+class LabImagingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -49,14 +49,14 @@ class LabResultsController extends Controller
             $file = $request->file('lab_result_file');
             $data = $request->all();
             $basename = $file->getClientOriginalName();
-            $directoryPath = public_path('backend/assets/lab_result');
+            $directoryPath = public_path('backend/assets/lab_imaging');
             $type = $file->getClientMimeType();
             $size = $file->getSize();
             if (!File::isDirectory($directoryPath)) {
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
             $file->move($directoryPath, $basename);
-            $filepath = 'backend/assets/lab_result/' . $basename;
+            $filepath = 'backend/assets/lab_imaging/' . $basename;
 
             $metadata = new Metadata();
             $metadata->basename = $basename;
@@ -67,29 +67,28 @@ class LabResultsController extends Controller
             $metadata->save();
 
             $data['metadata_id'] = $metadata->id;
+            $data['description'] = nl2br($data['description']);
 
-            $data['type'] = str_replace(',', ', ', $data['types']); // Ensure space after comma
-
-            $labResult = new LabResults();
-            $labResult->fill($data);
-            $labResult->save();
+            $labImaging = new LabImaging();
+            $labImaging->fill($data);
+            $labImaging->save();
 
 
             $patientAuditLogs = new PatientAuditLogs();
-            $patientAuditLogs->patient_id = $labResult->patient_profile_id;
+            $patientAuditLogs->patient_id = $labImaging->patient_profile_id;
             $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
-            $patientAuditLogs->changes = 'Uploaded Lab Results';
+            $patientAuditLogs->changes = 'Uploaded Lab Imaging';
             $patientAuditLogs->save();
 
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'data' => $labResult,
-                'message' => "Lab Result Successfully Uploaded"
+                'data' => $labImaging,
+                'message' => "Lab Imagin Successfully Uploaded"
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::info('error on saving patient profile' . $e);
+            Log::info('error on saving lab imaging' . $e);
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -106,6 +105,7 @@ class LabResultsController extends Controller
     public function show($id)
     {
         //
+
     }
 
     /**
@@ -140,24 +140,26 @@ class LabResultsController extends Controller
     public function destroy($id)
     {
         //
+
         try {
             DB::beginTransaction();
 
-            $patientProfile = LabResults::find($id);
-            $patientProfile->delete();
-            $patientAuditLogs = new PatientAuditLogs();
+            $labImaging = LabImaging::find($id);
+            $labImaging->delete();
 
-            $patientAuditLogs->patient_id = $patientProfile->patient_profile_id;
+            $patientAuditLogs = new PatientAuditLogs();
+            $patientAuditLogs->patient_id = $labImaging->patient_profile_id;
             $patientAuditLogs->user_profile_id = Auth::user()->userProfile->id;
-            $patientAuditLogs->changes = 'Deleted Lab Result' . ' ' . $patientProfile->type;
+            $patientAuditLogs->changes = 'Deleted Lab Imaging ' . ' ' . $labImaging->type;
             $patientAuditLogs->save();
 
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => "Lab Result Successfully Deleted"
+                'message' => "Lab Imaging Successfully Deleted"
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -165,10 +167,10 @@ class LabResultsController extends Controller
         }
     }
 
-    public function getLabResultsTable(Request $request)
+    public function getLabImagingTable(Request $request)
     {
         if ($request->ajax()) {
-            $query = LabResults::orderBy('created_at', 'desc');
+            $query = LabImaging::orderBy('created_at', 'desc');
 
             if ($request->has('patient_profile_id')) {
                 $query->where('patient_profile_id', $request->patient_profile_id);
@@ -187,7 +189,7 @@ class LabResultsController extends Controller
                     return '';
                 })
                 ->addColumn('date_uploaded', function ($data) {
-                    return Carbon::parse($data->created_at)->format('M/d/Y h:i A');
+                    return Carbon::parse($data->date_tested)->format('M/d/Y h:i A');
                 })
                 ->addColumn('action', function ($data) {
                     $dropdown = '<div class="btn-group">
@@ -196,7 +198,7 @@ class LabResultsController extends Controller
                     </button>
                     <ul class="dropdown-menu">
                    
-                        <li><button class="dropdown-item deleteFileButton" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+                        <li><button class="dropdown-item deleteLabImaging" id="' . $data->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
                     </ul>
                  </div>';
                     return $dropdown;
