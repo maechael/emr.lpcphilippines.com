@@ -63,4 +63,9 @@ class PatientProfile extends Model
     {
         return $this->hasMany(FluidOutput::class, 'patient_profile_id');
     }
+
+    public function patienProfileNote()
+    {
+        return $this->hasOne(PatientProfileNote::class, 'patient_profile_id');
+    }
 }

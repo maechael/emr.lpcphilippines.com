@@ -32,7 +32,7 @@
                         @include('patient-fluid-monitoring.patient-fluid-intake', compact('patientProfile'))
                     </div>
                     <div class="tab-pane fade" id="activityLogs" role="tabpanel">
-                        @include('patient-list.activity-logs', compact('patientProfile', 'logs'))
+                        @include('patient-list.activity-logs', compact('patientProfile', 'logs', 'patientNotes', 'userProfileId'))
                     </div>
 
                 </div>

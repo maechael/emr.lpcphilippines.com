@@ -7,9 +7,11 @@ use App\Models\LabResultType;
 use App\Models\MedicationSchedule;
 use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
+use App\Models\PatientProfileNote;
 use App\Models\Specialization;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -89,7 +91,9 @@ class PatientListController extends Controller
         $labTestTypes = LabResultType::orderBy('name')->get();
         $medicationSchedule = new MedicationSchedule();
         $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
-        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions'));
+        $userProfileId = Auth::user()->userProfile->id;
+        $patientNotes = PatientProfileNote::where('patient_profile_id', $patientProfile->id)->orderBy('created_at')->get();
+        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions', 'patientNotes', 'userProfileId'));
     }
 
     /**

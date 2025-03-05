@@ -12,6 +12,8 @@ use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\PatientListController;
 use App\Http\Controllers\PatientMedicationController;
+use App\Http\Controllers\PatientProfileController;
+use App\Http\Controllers\PatientProfileNoteController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -123,6 +125,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/lab-imaging', LabImagingController::class);
     Route::post('/get-lab-imaging-table', [LabImagingController::class, 'getLabImagingTable'])->name('get-lab-imaging-table');
 
+
+    //notes log
+    Route::resource('/notes-log', PatientProfileNoteController::class);
 
     //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {

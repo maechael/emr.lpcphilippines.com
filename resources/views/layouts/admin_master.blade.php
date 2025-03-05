@@ -31,6 +31,7 @@
     <script src="{{ asset('backend/assets/libs/ladda-bootstrap/dist/spin.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/ladda-bootstrap/dist/ladda.min.js') }}"></script>
 
+
     @include('partials.vendor-scripts')
 
     <!-- App favicon -->

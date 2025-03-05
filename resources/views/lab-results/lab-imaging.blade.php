@@ -37,7 +37,6 @@
             $('#labImagingModal').modal('show');
         });
 
-
         $('.labImaging').DataTable({
             processing: true,
             serverSide: true,
@@ -75,8 +74,6 @@
             ]
         });
 
-
-
         $(document).on('click', '.deleteLabImaging', function() {
             var deleteFileId = $(this).attr('id');
             Swal.fire({
@@ -99,6 +96,8 @@
                         dataType: "json",
                         success: function(data) {
                             Swal.fire({
+
+
                                 title: 'Success!',
                                 text: "Deleted",
                                 icon: 'success',

@@ -33,4 +33,9 @@ class UserProfile extends Model
     {
         return $this->hasMany(PatientAuditLogs::class, 'user_profile_id');
     }
+
+    public function patientProfileNote()
+    {
+        return $this->hasOne(PatientProfileNote::class, 'sent_by');
+    }
 }
