@@ -42,8 +42,7 @@
 
 <div class="d-flex align-items-center justify-content-between">
     <h5 class="card-title mt-3">Latest Medical Assesment</h5>
-    <button class="btn btn-light btn-sm waves-effect waves-light" id="addVitalSign"><i
-            class="ri-file-edit-line"></i></button>
+
 </div>
 <ul class="list-group">
     <li class="list-group-item">
