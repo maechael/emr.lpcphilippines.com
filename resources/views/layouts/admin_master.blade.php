@@ -35,7 +35,7 @@
     @include('partials.vendor-scripts')
 
     <!-- App favicon -->
-    {{-- <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.icon') }}"> --}}
+    {{-- <link rel="shortcut icon" href="{{ asset('backend/assets/images/lpc.png') }}"> --}}
     <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Add the evo-calendar.css for styling -->

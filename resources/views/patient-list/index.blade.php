@@ -17,8 +17,8 @@
                         style="border-collapse: collapse; border-spacing: 0; width: 100%; ">
                         <thead class="table-light">
                             <tr>
-                                <th>First Name</th>
                                 <th>Last Name</th>
+                                <th>First Name</th>
                                 <th>Age</th>
                                 <th>Contact Number</th>
                                 <th>Address</th>

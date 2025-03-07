@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-sm-6">
                 <div id="yearContainer" style="display:flex">
-                    <span id="year"></span> © Health Sphere.
+                    <span id="year"></span> © London Paramount Care.
                 </div>
             </div>
             <div class="col-sm-6">

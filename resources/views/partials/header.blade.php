@@ -1,24 +1,29 @@
 <header id="page-topbar">
-
+    @php
+    $user = Auth::user();
+    $id = $user->id;
+    $adminData = App\Models\User::find($id);
+    $userProfile = $user->userProfile;
+    @endphp
     <div class="navbar-header">
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
                 <a href="index.html" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-sm" height="22">
+                        <img src="{{ asset('backend/assets/images/lpc.png') }}" alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-dark" height="20">
+                        <img src="{{ asset('backend/assets/images/lpc.png') }}" alt="logo-dark" height="100">
                     </span>
                 </a>
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{ asset('backend/assets/images/logo-light.png') }}" alt="logo-sm-light"
+                        <img src="{{ asset('backend/assets/images/lpc.png') }}" alt="logo-sm-light"
                             height="20">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{ asset('backend/assets/images/logo-light.png') }}" alt="logo-light" height="20">
+                        <img src="{{ asset('backend/assets/images/lpc.png') }}" alt="logo-light" height="50">
                     </span>
                 </a>
             </div>
@@ -41,7 +46,7 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{asset('backend/assets/images/users/Elchico(256x256).png')}}"
+                    <img class="rounded-circle header-profile-user" src="{{asset($userProfile->media->filepath)}}"
                         alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1"></span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
