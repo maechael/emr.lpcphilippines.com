@@ -26,9 +26,13 @@
 
         <!--- Sidemenu -->
         <div id="sidebar-menu">
+
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
+                @can('view_any_menu', App\Models\Permission::find(1))
                 <li class="menu-title">Menu</li>
+
+                @can('view_dashboard', App\Models\Permission::find(1))
                 <li>
                     <a href="{{ route('dashboard') }}" class="waves-effect">
                         <i class="ri-dashboard-line"></i>
@@ -36,7 +40,9 @@
                     </a>
 
                 </li>
+                @endcan
 
+                @can('view_any_security', App\Models\Permission::find(1))
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-lock-line"></i>
@@ -49,7 +55,8 @@
                         <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
                     </ul>
                 </li>
-
+                @endcan
+                @endcan
 
                 @can('view_any_patient_list', App\Models\Permission::find(1))
                 <li class="menu-title">Patient Section</li>
@@ -91,6 +98,7 @@
                 </li>
                 @endcan
 
+                @can('view_any_nurse', App\Models\Permission::find(1))
                 <li class="menu-title">Nurse Section</li>
                 <li>
 
@@ -103,6 +111,7 @@
                     </ul>
 
                 </li>
+                @endcan
 
             </ul>
         </div>

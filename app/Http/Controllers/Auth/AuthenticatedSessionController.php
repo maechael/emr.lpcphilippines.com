@@ -28,7 +28,11 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        $user = Auth::user();
+        // ✅ Check if the user has a PatientProfile
+        if ($user->userProfile->patientProfile) {
+            return redirect()->route('patient-list.show', ['patient_list' => $user->userProfile->patientProfile->id]);
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

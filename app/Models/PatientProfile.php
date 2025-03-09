@@ -68,4 +68,9 @@ class PatientProfile extends Model
     {
         return $this->hasOne(PatientProfileNote::class, 'patient_profile_id');
     }
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
 }

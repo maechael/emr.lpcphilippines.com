@@ -9,6 +9,7 @@ use App\Models\PatientAuditLogs;
 use App\Models\PatientProfile;
 use App\Models\PatientProfileNote;
 use App\Models\Specialization;
+use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,8 +93,11 @@ class PatientListController extends Controller
         $medicationSchedule = new MedicationSchedule();
         $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
         $userProfileId = Auth::user()->userProfile->id;
+        $users = UserProfile::where('position', 'Patient')
+            ->whereDoesntHave('patientProfile')
+            ->get();
         $patientNotes = PatientProfileNote::where('patient_profile_id', $patientProfile->id)->orderBy('created_at')->get();
-        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions', 'patientNotes', 'userProfileId'));
+        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions', 'patientNotes', 'userProfileId', 'users'));
     }
 
     /**
@@ -230,6 +234,67 @@ class PatientListController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+        }
+    }
+
+    public function assignUserProfileToPatient(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $patientProfile = PatientProfile::find($data['patient_profile_id']);
+            $patientProfile->user_profile_id = $data['user_profile_id'];
+            $patientProfile->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $patientProfile,
+                'message' => "User Profile Successfully Added"
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info('error on assigning user profile' . $e);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function loadTabContent(Request $request)
+    {
+        $patientProfile = PatientProfile::findOrFail($request->patient_id);
+        $patientProfile['age'] = Carbon::parse($patientProfile->birthdate)->age;
+        $specializations = Specialization::orderBy('name')->get();
+        $logs = $patientProfile->patientAuditLog()->orderBy('created_at', 'desc')->get();
+        $labTestTypes = LabResultType::orderBy('name')->get();
+        $medicationSchedule = new MedicationSchedule();
+        $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
+        $userProfileId = Auth::user()->userProfile->id;
+        $users = UserProfile::where('position', 'Patient')
+            ->whereDoesntHave('patientProfile')
+            ->get();
+        $patientNotes = PatientProfileNote::where('patient_profile_id', $patientProfile->id)->orderBy('created_at')->get();
+        switch ($request->tab) {
+            case 'appointment':
+                return view('appointment.index', compact('specializations', 'patientProfile'))->render();
+            case 'labResults':
+                return view('lab-results.index', compact('patientProfile', 'labTestTypes'))->render();
+            case 'medicalRecords':
+                return view('medical-records.index', compact('patientProfile'))->render();
+            case 'medication':
+                return view('patient-medication.index', compact('patientProfile', 'dayOfWeekOptions'))->render();
+            case 'imaging':
+                return view('lab-results.lab-imaging', compact('patientProfile', 'labTestTypes'))->render();
+            case 'fluidMonitoring':
+                return view('patient-fluid-monitoring.patient-fluid-intake', compact('patientProfile'))->render() .
+                    view('patient-fluid-monitoring.patient-fluid-output', compact('patientProfile'))->render();
+            case 'activityLogs':
+                return view('patient-list.activity-logs', compact('patientProfile', 'logs', 'patientNotes', 'userProfileId'))->render();
+            case 'otherDocuments':
+                return view('other-document.index', compact('patientProfile'))->render();
+            default:
+                return response()->json(['error' => 'Invalid tab'], 400);
         }
     }
 }

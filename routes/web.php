@@ -9,6 +9,7 @@ use App\Http\Controllers\LabResultController;
 use App\Http\Controllers\LabResultsController;
 use App\Http\Controllers\LabResultTypeController;
 use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\OtherDocumentController;
 use App\Http\Controllers\PatientAppointmentController;
 use App\Http\Controllers\PatientListController;
 use App\Http\Controllers\PatientMedicationController;
@@ -62,10 +63,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
     //patient list routes
     Route::resource('/patient-list', PatientListController::class);
     Route::post('/get-patient-list', [PatientListController::class, 'getPatientList'])->name('get-patient-list');
-
+    Route::post('/assign-user-profile-to-patient', [PatientListController::class, 'assignUserProfileToPatient'])->name('assign-user-profile-to-patient');
+    Route::post('/load-tab-content', [PatientListController::class, 'loadTabContent'])->name('tab.load');
 
     //vital signs routes
     Route::resource('/vital-sign', VitalSignController::class);
@@ -128,6 +131,10 @@ Route::middleware('auth')->group(function () {
 
     //notes log
     Route::resource('/notes-log', PatientProfileNoteController::class);
+
+    //other document
+    Route::resource('/other-document', OtherDocumentController::class);
+    Route::post('/get-other-document-table', [OtherDocumentController::class, 'getOtherDocumentTable'])->name('get-other-document-table');
 
     //admin nav
     Route::prefix('/admin')->name('admin.')->group(function () {

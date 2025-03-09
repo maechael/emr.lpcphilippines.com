@@ -14,7 +14,6 @@ class LabImaging extends Model
     protected $fillable = [
         'patient_profile_id',
         'metadata_id',
-        'patient_profile_id',
         'type',
         'description',
         'date_tested'

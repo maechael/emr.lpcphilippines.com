@@ -7,9 +7,12 @@
                     <div>
                         <h5>Lab Results</h5>
                     </div>
+                    @can('upload_lab_result', App\Models\PatientProfile::find(1))
                     <button class="btn btn-success"
                         id="uploadLabResults">
                         UPLOAD</button>
+                    @endcan
+
                 </div>
                 <div>
                     <table id="labResultTable" class="table table-bordered dt-responsive  labResultTable"

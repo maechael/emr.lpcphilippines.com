@@ -104,4 +104,24 @@ class PermissionPolicy
     {
         return $user->role->hasPermission('view_doctor_section');
     }
+
+    public function view_any_nurse(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_nurse');
+    }
+
+    public function view_any_menu(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_menu');
+    }
+
+    public function view_dashboard(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_dashboard');
+    }
+
+    public function view_any_security(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_security');
+    }
 }
