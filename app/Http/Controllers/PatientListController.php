@@ -196,7 +196,13 @@ class PatientListController extends Controller
     public function getPatientList(Request $request)
     {
         if ($request->ajax()) {
-            $data = PatientProfile::orderBy('created_at');
+            $user = Auth::user();
+            if ($user->role_id == 7) {
+                $patientProfileIds = $user->userProfile->doctorProfile->patientAppointment->pluck('patient_profile_id');
+                $data = PatientProfile::whereIn('id', $patientProfileIds)->orderBy('created_at');
+            } else {
+                $data = PatientProfile::orderBy('created_at');
+            }
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('full_name', function ($data) {

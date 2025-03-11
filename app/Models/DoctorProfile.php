@@ -14,6 +14,7 @@ class DoctorProfile extends Model
 
     protected $fillable = [
         'specialization_id',
+        'user_profile_id',
         'firstname',
         'lastname',
         'email',
@@ -55,5 +56,10 @@ class DoctorProfile extends Model
             ->get();
 
         return $availableDoctors ? $availableDoctors : [];
+    }
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
     }
 }

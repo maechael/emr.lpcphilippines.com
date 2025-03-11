@@ -89,9 +89,16 @@ class MedicalRecordController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = Auth::user();
+
+        if ($user->role_id == 7 && $user->userProfile && $user->userProfile->doctorProfile) {
+            $doctorList = DoctorProfile::where('id', $user->userProfile->doctorProfile->id)->get();
+        } else {
+            $doctorList = DoctorProfile::orderBy('lastname')->get();
+        }
+
         $patientProfile = PatientProfile::find($id);
-        $doctorList = DoctorProfile::orderBy('lastname')->get();
+
         return view('medical-records.medical-assesment-form', compact('doctorList', 'patientProfile'));
     }
 
@@ -104,8 +111,15 @@ class MedicalRecordController extends Controller
     public function edit($id)
     {
         //
+        $user = Auth::user();
+
+        if ($user->role_id == 7 && $user->userProfile && $user->userProfile->doctorProfile) {
+            $doctorList = DoctorProfile::where('id', $user->userProfile->doctorProfile->id)->get();
+        } else {
+            $doctorList = DoctorProfile::orderBy('lastname')->get();
+        }
+
         $medicalRecord = MedicalRecord::find($id);
-        $doctorList = DoctorProfile::orderBy('lastname')->get();
         $patientProfile = $medicalRecord->patientProfile;
 
         // Convert <br> to new lines while keeping intentional spacing
@@ -120,7 +134,7 @@ class MedicalRecordController extends Controller
         }
 
 
-        return view('medical-records.update-medical-assesment-form', compact('doctorList', 'medicalRecord', 'patientProfile'));
+        return view('medical-records.update-medical-assesment-form', compact('doctorList', 'medicalRecord', 'patientProfile', 'id'));
     }
 
     /**

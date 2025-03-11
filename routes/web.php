@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/doctor-profile', DoctorProfileController::class);
     Route::post('/get-doctor-profile-list', [DoctorProfileController::class, 'getDoctorProfileList'])->name('get-doctor-profile-list');
     Route::post('/get-available-doctor', [DoctorProfileController::class, 'getAvailableDoctor'])->name('get-available-doctor');
-
+    Route::post('/assign-user-profile-to-doctor', [DoctorProfileController::class, 'assignUserProfileToDoctor'])->name('assign-user-profile-to-doctor');
     //patient appointment 
     Route::resource('/patient-appointment', PatientAppointmentController::class);
     Route::post('/get-patient-appointment-profile-table', [PatientAppointmentController::class, 'getPatientAppointmentProfileTable'])->name('get-patient-appointment-profile-table');

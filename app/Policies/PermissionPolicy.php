@@ -124,4 +124,12 @@ class PermissionPolicy
     {
         return $user->role->hasPermission('view_any_security');
     }
+    public function view_patient_general_list(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_patient_general_list');
+    }
+    public function view_patient_per_doctor_list(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_patient_per_doctor_list');
+    }
 }

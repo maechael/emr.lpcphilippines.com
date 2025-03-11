@@ -72,7 +72,7 @@
     $(document).ready(function() {
         $('#medicalAssesmentForm').on('submit', function(e) {
             e.preventDefault();
-            var hiddenId = "{{$patientProfile->id}}";
+            var hiddenId = "{{$medicalRecord->id}}";
             var url = $('#action_button').val() == 'Update' ? `{{ route('medical_record.update',':id') }}`.replace(':id', hiddenId) : "{{ route('medical_record.store') }}";
             var method = $('#action_button').val() == 'Update' ? 'PUT' : 'POST';
             var formData = new FormData(this);

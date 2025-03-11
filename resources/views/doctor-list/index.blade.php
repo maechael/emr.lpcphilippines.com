@@ -33,6 +33,7 @@
     </div>
 </div>
 @include('doctor-list.doctor-profile-form', compact('dayOfWeekOptions', 'specializations'))
+@include('doctor-list.select_user_profile_form', compact('users'))
 <script>
     $(document).ready(function(e) {
         $('.doctorListTable').DataTable({
@@ -111,6 +112,13 @@
             </div>
          </div>`);
             $('#action_button').val('Submit');
+        });
+
+        $(document).on('click', '.assignUserButton', function(e) {
+            e.preventDefault();
+            var doctorProfileId = $(this).attr('id');
+            $('#doctor_profile_id').val(doctorProfileId);
+            $('#userFormModal').modal('show');
         });
 
         $(document).on('click', '.editButton', function(e) {

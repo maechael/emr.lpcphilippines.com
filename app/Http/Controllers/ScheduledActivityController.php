@@ -7,6 +7,7 @@ use App\Models\DoctorProfile;
 use App\Models\PatientAppointment;
 use App\Models\PatientProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -92,7 +93,14 @@ class ScheduledActivityController extends Controller
     {
         try {
             DB::beginTransaction();
-            $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+            $user = Auth::user();
+            if ($user->role_id == 7) {
+
+                $patientAppointments = PatientAppointment::where('doctor_profile_id', $user->userProfile->doctorProfile->id)->orderBy('appointment_date')->get();
+            } else {
+                $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+            }
+
             $data = [];
 
             foreach ($patientAppointments as $patientAppointment) {
@@ -129,7 +137,13 @@ class ScheduledActivityController extends Controller
     {
         try {
             DB::beginTransaction();
-            $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+            $user = Auth::user();
+            if ($user->role_id == 7) {
+
+                $patientAppointments = PatientAppointment::where('doctor_profile_id', $user->userProfile->doctorProfile->id)->orderBy('appointment_date')->get();
+            } else {
+                $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+            }
             $data = [];
 
             foreach ($patientAppointments as $patientAppointment) {

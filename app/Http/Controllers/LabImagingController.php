@@ -143,7 +143,6 @@ class LabImagingController extends Controller
 
         try {
             DB::beginTransaction();
-
             $labImaging = LabImaging::find($id);
             $labImaging->delete();
 

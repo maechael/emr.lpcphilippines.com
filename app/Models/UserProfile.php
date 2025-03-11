@@ -43,4 +43,9 @@ class UserProfile extends Model
     {
         return $this->hasOne(PatientProfile::class, 'user_profile_id');
     }
+
+    public function doctorProfile()
+    {
+        return $this->hasOne(doctorProfile::class, 'user_profile_id');
+    }
 }

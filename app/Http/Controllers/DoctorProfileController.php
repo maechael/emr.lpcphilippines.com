@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DoctorProfile;
 use App\Models\DoctorSchedule;
 use App\Models\Specialization;
+use App\Models\User;
+use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +27,11 @@ class DoctorProfileController extends Controller
         $doctorSchedule = new DoctorSchedule();
         $dayOfWeekOptions = $doctorSchedule->getDayOfWeekOptions();
         $specializations = Specialization::orderBy('name')->get();
-        return view('doctor-list.index', compact('dayOfWeekOptions', 'specializations'));
+        $users = UserProfile::whereHas('user', function ($query) {
+            $query->where('role_id', 7);
+        })->whereDoesntHave('doctorProfile')->get();
+
+        return view('doctor-list.index', compact('dayOfWeekOptions', 'specializations', 'users'));
     }
 
     /**
@@ -194,7 +200,7 @@ class DoctorProfileController extends Controller
                     <i class="ri-more-line"></i>
                 </button>
                 <ul class="dropdown-menu">
-               
+                    <li><button class="dropdown-item assignUserButton" id="' . $data->id . '"><i class="ri-user-settings-line"></i>Acc Setting</button></li>
                     <li><button class="dropdown-item editButton" id="' . $data->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
                     
                 </ul>
@@ -215,5 +221,29 @@ class DoctorProfileController extends Controller
             'data' => $availableDoctor,
             'message' => 'available doctor successfully returned'
         ]);
+    }
+
+    public function assignUserProfileToDoctor(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $doctorProfile = DoctorProfile::find($data['doctor_profile_id']);
+            $doctorProfile->user_profile_id = $data['user_profile_id'];
+            $doctorProfile->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $doctorProfile,
+                'message' => "Doctor Profile Successfully Added"
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info('error on assigning user profile to doctor' . $e);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
