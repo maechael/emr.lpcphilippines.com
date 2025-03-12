@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Kanban\ScheduledActivityKanban;
 use App\Models\DoctorProfile;
+use App\Models\MedicationSchedule;
 use App\Models\PatientAppointment;
 use App\Models\PatientProfile;
 use Illuminate\Http\Request;
@@ -99,6 +100,7 @@ class ScheduledActivityController extends Controller
                 $patientAppointments = PatientAppointment::where('doctor_profile_id', $user->userProfile->doctorProfile->id)->orderBy('appointment_date')->get();
             } else {
                 $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+                $patientMedicationSchedules = MedicationSchedule::orderBy('next_dose_time')->get();
             }
 
             $data = [];
@@ -115,6 +117,21 @@ class ScheduledActivityController extends Controller
                     'date' => $patientAppointment->appointment_date,
                     'type' => 'appointmemnt',
                     'description' => "Patient " . $patientFullName . " has an appointment with Dr. " . $doctorFullName . " at " . $appointmentTime . ".",
+                    'color' => '#28a745' // Green for callbacks
+                ];
+            }
+
+            foreach ($patientMedicationSchedules as $patientMedicationSchedule) {
+                $patientProfile =  PatientProfile::find($patientMedicationSchedule->patientMedication->patient_profile_id);
+                // $doctorProfile = DoctorProfile::find($patientAppointment->doctor_profile_id);
+                $patientFullName = $patientProfile->firstname . ' ' . $patientProfile->lastname;
+
+                $data[] = [
+                    'id' => $patientMedicationSchedule->id,
+                    'name' => 'Medication',
+                    'date' => $patientMedicationSchedule->next_dose_time,
+                    'type' => 'medication',
+                    'description' => "Patient " . $patientFullName . " must take " . $patientMedicationSchedule->patientMedication->medication_name . " (" . $patientMedicationSchedule->patientMedication->dosage . ") at " . $patientMedicationSchedule->next_dose_time . ".",
                     'color' => '#28a745' // Green for callbacks
                 ];
             }
@@ -143,8 +160,11 @@ class ScheduledActivityController extends Controller
                 $patientAppointments = PatientAppointment::where('doctor_profile_id', $user->userProfile->doctorProfile->id)->orderBy('appointment_date')->get();
             } else {
                 $patientAppointments = PatientAppointment::orderBy('appointment_date')->get();
+                $patientMedicationSchedules = MedicationSchedule::orderBy('next_dose_time')->get();
             }
             $data = [];
+
+
 
             foreach ($patientAppointments as $patientAppointment) {
                 $patientProfile =  PatientProfile::find($patientAppointment->patient_profile_id);
@@ -162,6 +182,8 @@ class ScheduledActivityController extends Controller
                     'status' => $patientAppointment->status,
                 ];
             }
+
+
 
             DB::commit();
             return response()->json([
@@ -181,9 +203,12 @@ class ScheduledActivityController extends Controller
     {
         try {
             DB::beginTransaction();
+
             $patientAppointment = PatientAppointment::find($request->id);
             $patientAppointment->status = $request->status;
             $patientAppointment->save();
+
+
             DB::commit();
             return response()->json([
                 'message' => 'Status Updated',

@@ -62,9 +62,24 @@
                             </div>
                         </div>
                         <div class="col-6">
+                            <label for="height" class="form-label">Height:</label>
+                            <div class="input-group bootstrap-touchspin bootstrap-touchspin-injected">
+                                <span class="input-group-addon bootstrap-touchspin-prefix input-group-prepend">
+                                    <span class="input-group-text">cm</span>
+                                </span><input id="height" type="text" name="height" class="form-control">
+                            </div>
                         </div>
                     </div>
-
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="respiratory_rate" class="form-label">Respiratory Rate:</label>
+                            <div class="input-group bootstrap-touchspin bootstrap-touchspin-injected">
+                                <span class="input-group-addon bootstrap-touchspin-prefix input-group-prepend">
+                                    <span class="input-group-text">BPM</span>
+                                </span><input id="respiratory_rate" type="text" name="respiratory_rate" class="form-control">
+                            </div>
+                        </div>
+                    </div>
                     <input type="hidden" name="patient_profile_id" id="patient_profile_id">
                 </div>
                 <div class="modal-footer">

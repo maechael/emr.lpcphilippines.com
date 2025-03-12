@@ -18,9 +18,8 @@
                             <tr>
                                 <th>Medication</th>
                                 <th>Dosage</th>
-                                <th>Time Intake</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
+                                <th>Schedule</th>
+                                <th>Next Dose Time</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -31,7 +30,7 @@
     </div>
 </div>
 
-@include('patient-medication.patient-medication-form', compact('dayOfWeekOptions'))
+@include('patient-medication.patient-medication-form')
 
 <script>
     $(document).ready(function() {
@@ -54,16 +53,12 @@
                     name: 'dosage'
                 },
                 {
-                    data: 'medication_schedule',
-                    name: 'medication_schedule'
+                    data: 'interval_schedule',
+                    name: 'interval_schedule'
                 },
                 {
-                    data: 'start_date',
-                    name: 'start_date'
-                },
-                {
-                    data: 'end_date',
-                    name: 'end_date'
+                    data: 'next_dose_time',
+                    name: 'next_dose_time'
                 },
                 {
                     data: 'action',

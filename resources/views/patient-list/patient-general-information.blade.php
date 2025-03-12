@@ -38,6 +38,14 @@
         <span>Weight: </span>
         <span id="weight"></span>
     </li>
+    <li class="list-group-item">
+        <span>Height: </span>
+        <span id="height"></span>
+    </li>
+    <li class="list-group-item">
+        <span>Respiratory Rate: </span>
+        <span id="respiratory_rate"></span>
+    </li>
 </ul>
 
 <div class="d-flex align-items-center justify-content-between">
@@ -83,6 +91,8 @@
                 $('#heartRate').text(`${data.data.heart_rate}BPM`);
                 $('#pulseRate').text(`${data.data.pulse_rate}Hz`);
                 $('#weight').text(`${data.data.weight}Kg`);
+                $('#height').text(`${data.data.height}cm`);
+                $('#respiratory_rate').text(`${data.data.respiratory_rate}BPM`);
             },
             error: function(data) {
 

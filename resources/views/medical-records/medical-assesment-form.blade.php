@@ -8,6 +8,48 @@
                 <h4>Record Medical Assestment for patient: {{$patientProfile->firstname}} {{$patientProfile->lastname}}</h4>
             </div>
             <div class="card-body">
+                <div class="row">
+                    <h6>Latest Vital Sign:</h6>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span>Blood Pressure: </span>
+                                <span id="blodPressure"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Temperature: </span>
+                                <span id="temperature"></span>
+                            </li>
+                            <li class=" list-group-item">
+                                <span>Heart Rate: </span>
+                                <span id="heartRate"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span>Pulse Rate: </span>
+                                <span id="pulseRate"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Weight: </span>
+                                <span id="weight"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Height: </span>
+                                <span id="height"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <span>Respiratory Rate: </span>
+                                <span id="respiratory_rate"></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
                 <form id="medicalAssesmentForm" enctype="multipart/form-data">
                     <div class="row mb-2">
                         <div class="col-6">
@@ -69,6 +111,32 @@
 @include('patient-list.vital-sign-form')
 <script>
     $(document).ready(function() {
+
+        function getLatestVitalSign(patientProfileId) {
+            $.ajax({
+                url: "/get-latest-vital-sign/" + patientProfileId,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#blodPressure').text(`${data.data.blood_pressure} mmHg`);
+                    $('#temperature').text(`${data.data.temperature}°C`);
+                    $('#heartRate').text(`${data.data.heart_rate}BPM`);
+                    $('#pulseRate').text(`${data.data.pulse_rate}Hz`);
+                    $('#weight').text(`${data.data.weight}Kg`);
+                    $('#height').text(`${data.data.height} cm`);
+                    $('#respiratory_rate').text(`${data.data.respiratory_rate}BPM`);
+                },
+                error: function(data) {
+
+                },
+            });
+        }
+
+        getLatestVitalSign(`{{ $patientProfile->id }}`)
+
+
         $('#medicalAssesmentForm').on('submit', function(e) {
             e.preventDefault();
             var hiddenId = $('#hidden_id').val();
@@ -121,6 +189,8 @@
             $('#patient_profile_id').val(patientProfileId);
             $('#vitalSignModal').modal('show');
         })
+
+
     });
 </script>
 @endsection

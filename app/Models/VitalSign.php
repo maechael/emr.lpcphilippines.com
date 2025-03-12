@@ -18,6 +18,8 @@ class VitalSign extends Model
         'heart_rate',
         'pulse_rate',
         'weight',
+        'height',
+        'respiratory_rate'
     ];
 
     public function patientProfile()

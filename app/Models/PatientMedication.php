@@ -26,6 +26,6 @@ class PatientMedication extends Model
 
     public function medicationSchedule()
     {
-        return $this->hasMany(MedicationSchedule::class, 'patient_medication_id');
+        return $this->hasOne(MedicationSchedule::class, 'patient_medication_id');
     }
 }

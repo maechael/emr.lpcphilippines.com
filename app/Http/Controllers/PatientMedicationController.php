@@ -37,24 +37,60 @@ class PatientMedicationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // public function store(Request $request)
+    // {
+    //     //
+    //     try {
+    //         DB::beginTransaction();
+    //         $data = $request->all();
+    //         // Set end_date to null if not provided
+    //         $data['end_date'] = $data['end_date'] ?? null;
+    //         // Create PatientMedication record
+    //         $patientMedication = PatientMedication::create($data);
+    //         foreach ($data['day_of_week'] as $index => $day) {
+    //             // If "Everyday" is selected, save all seven days
+    //             MedicationSchedule::create([
+    //                 'patient_medication_id' => $patientMedication->id,
+    //                 'day_of_week' => $day,
+    //                 'time' => $data['start_time'][$index],
+    //             ]);
+    //         }
+    //         DB::commit();
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'data' => $patientMedication,
+    //             'message' => "Patient Medication Successfully Added"
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error('Error on saving patient medication: ' . $e->getMessage());
+
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
     public function store(Request $request)
     {
-        //
         try {
             DB::beginTransaction();
             $data = $request->all();
+
             // Set end_date to null if not provided
             $data['end_date'] = $data['end_date'] ?? null;
+
             // Create PatientMedication record
             $patientMedication = PatientMedication::create($data);
-            foreach ($data['day_of_week'] as $index => $day) {
-                // If "Everyday" is selected, save all seven days
-                MedicationSchedule::create([
-                    'patient_medication_id' => $patientMedication->id,
-                    'day_of_week' => $day,
-                    'time' => $data['start_time'][$index],
-                ]);
-            }
+
+            // Create MedicationSchedule record
+            MedicationSchedule::create([
+                'patient_medication_id' => $patientMedication->id,
+                'interval_hours' => $data['interval_hours'], // Every 12, 24 hours, etc.
+                'next_dose_time' => $data['next_dose_time'], // Initial timestamp of next dose
+                'status' => 'pending-task',
+            ]);
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -205,34 +241,15 @@ class PatientMedicationController extends Controller
                     $endDate = $data->end_date === null ? 'No End Date' : $data->end_date;
                     return $endDate;
                 })
-                ->addColumn('medication_schedule', function ($data) {
-                    $schedules = $data->medicationSchedule; // Eager load relationship
-                    $days = [];
-                    $formattedSchedules = [];
+                ->addColumn('next_dose_time', function ($data) {
 
-                    foreach ($schedules as $schedule) {
-                        $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $schedule->time)->format('g:i A');
-                        $days[$schedule->day_of_week][] = $startTime;
-                    }
+                    return optional($data->medicationSchedule)->next_dose_time
+                        ? \Carbon\Carbon::parse($data->medicationSchedule->next_dose_time)->format('Y-m-d h:i A')
+                        : 'N/A';
+                })
+                ->addColumn('interval_schedule', function ($data) {
 
-                    // Check if all days are present
-                    $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                    $scheduledDays = array_keys($days);
-
-                    if (count(array_intersect($allDays, $scheduledDays)) === 7) {
-                        // If every day has the same time, show "Everyday"
-                        $uniqueTimes = array_unique(array_merge(...array_values($days)));
-                        foreach ($uniqueTimes as $time) {
-                            $formattedSchedules[] = "Everyday ($time)";
-                        }
-                    } else {
-                        // Otherwise, list each day's schedule
-                        foreach ($days as $day => $times) {
-                            $formattedSchedules[] = "$day (" . implode(', ', array_unique($times)) . ")";
-                        }
-                    }
-
-                    return implode('<br>', $formattedSchedules);
+                    return $data->medicationSchedule->interval_hours ?? ' ';
                 })
                 ->addColumn('action', function ($data) {
                     $dropdown = '<div class="btn-group">

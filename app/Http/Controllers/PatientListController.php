@@ -91,13 +91,13 @@ class PatientListController extends Controller
         $logs = $patientProfile->patientAuditLog()->orderBy('created_at')->get();
         $labTestTypes = LabResultType::orderBy('name')->get();
         $medicationSchedule = new MedicationSchedule();
-        $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
+
         $userProfileId = Auth::user()->userProfile->id;
         $users = UserProfile::where('position', 'Patient')
             ->whereDoesntHave('patientProfile')
             ->get();
         $patientNotes = PatientProfileNote::where('patient_profile_id', $patientProfile->id)->orderBy('created_at')->get();
-        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes', 'dayOfWeekOptions', 'patientNotes', 'userProfileId', 'users'));
+        return view('patient-list.patient-profile-dashboard', compact('patientProfile', 'specializations', 'logs', 'labTestTypes',  'patientNotes', 'userProfileId', 'users'));
     }
 
     /**
@@ -275,7 +275,7 @@ class PatientListController extends Controller
         $logs = $patientProfile->patientAuditLog()->orderBy('created_at', 'desc')->get();
         $labTestTypes = LabResultType::orderBy('name')->get();
         $medicationSchedule = new MedicationSchedule();
-        $dayOfWeekOptions = $medicationSchedule->getDayOfWeekOptions();
+
         $userProfileId = Auth::user()->userProfile->id;
         $users = UserProfile::where('position', 'Patient')
             ->whereDoesntHave('patientProfile')
@@ -289,7 +289,7 @@ class PatientListController extends Controller
             case 'medicalRecords':
                 return view('medical-records.index', compact('patientProfile'))->render();
             case 'medication':
-                return view('patient-medication.index', compact('patientProfile', 'dayOfWeekOptions'))->render();
+                return view('patient-medication.index', compact('patientProfile'))->render();
             case 'imaging':
                 return view('lab-results.lab-imaging', compact('patientProfile', 'labTestTypes'))->render();
             case 'fluidMonitoring':
