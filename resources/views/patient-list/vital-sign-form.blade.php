@@ -96,14 +96,9 @@
         $('#vitalSignForm').on('submit', function(e) {
             e.preventDefault();
             var hiddenId = $('#hidden_id').val();
-            var url = $('#action_button').val() == 'Update' ? `{{ route('vital-sign.update',':id') }}`.replace(':id', hiddenId) : "{{ route('vital-sign.store') }}";
-            var method = $('#action_button').val() == 'Update' ? 'PUT' : 'POST';
+            var url = "{{ route('vital-sign.store') }}";
+            var method = 'POST';
             var formData = new FormData(this);
-
-            if (method === 'PUT') {
-                formData.append('_method', 'PUT');
-            }
-
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

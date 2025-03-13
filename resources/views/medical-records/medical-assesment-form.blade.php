@@ -110,29 +110,30 @@
 
 @include('patient-list.vital-sign-form')
 <script>
+    function getLatestVitalSign(patientProfileId) {
+        $.ajax({
+            url: "/get-latest-vital-sign/" + patientProfileId,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            dataType: "json",
+            success: function(data) {
+                $('#blodPressure').text(`${data.data.blood_pressure} mmHg`);
+                $('#temperature').text(`${data.data.temperature}°C`);
+                $('#heartRate').text(`${data.data.heart_rate}BPM`);
+                $('#pulseRate').text(`${data.data.pulse_rate}Hz`);
+                $('#weight').text(`${data.data.weight}Kg`);
+                $('#height').text(`${data.data.height} cm`);
+                $('#respiratory_rate').text(`${data.data.respiratory_rate}BPM`);
+            },
+            error: function(data) {
+
+            },
+        });
+    }
     $(document).ready(function() {
 
-        function getLatestVitalSign(patientProfileId) {
-            $.ajax({
-                url: "/get-latest-vital-sign/" + patientProfileId,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-                dataType: "json",
-                success: function(data) {
-                    $('#blodPressure').text(`${data.data.blood_pressure} mmHg`);
-                    $('#temperature').text(`${data.data.temperature}°C`);
-                    $('#heartRate').text(`${data.data.heart_rate}BPM`);
-                    $('#pulseRate').text(`${data.data.pulse_rate}Hz`);
-                    $('#weight').text(`${data.data.weight}Kg`);
-                    $('#height').text(`${data.data.height} cm`);
-                    $('#respiratory_rate').text(`${data.data.respiratory_rate}BPM`);
-                },
-                error: function(data) {
 
-                },
-            });
-        }
 
         getLatestVitalSign(`{{ $patientProfile->id }}`)
 
