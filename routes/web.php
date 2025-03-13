@@ -104,6 +104,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-scheduled-activity', [ScheduledActivityController::class, 'getScheduledActivity'])->name('get-scheduled-activity');
     Route::get('/scheduled-activity-kanban', [ScheduledActivityController::class, 'scheduledActivityKanban'])->name('scheduled-activity-kanban');
     Route::post('/update-task-kanban', [ScheduledActivityController::class, 'updateTaskKanban'])->name('update-task-kanban');
+    Route::post('update-medication-task', [ScheduledActivityController::class, 'updateMedicationTask'])->name('update-medication-task');
 
     //lab result type
     Route::resource('/lab-result-type', LabResultTypeController::class);

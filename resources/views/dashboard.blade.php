@@ -83,7 +83,7 @@
                                 <div class="kanban-list" id="pending-task"></div>
                             </div>
                             <div class="kanban-column">
-                                <h4>In Progress</h4>
+                                <h4>Cancelled</h4>
                                 <div class="kanban-list" id="cancelled-task"></div>
                             </div>
                             <div class="kanban-column">
@@ -153,7 +153,7 @@
                             minute: '2-digit'
                         }); // Format time
                         let taskElement = `
-                        <div class="kanban-item" data-id="${task.id}">
+                        <div class="kanban-item" data-id="${task.id}" data-type="${task.type}">
                          <strong>${task.name}</strong>
                          <p class="task-desc">${task.description || 'No description available'}</p>
                           <p class="task-time"><i class="far fa-calendar-alt"></i> ${formattedDate} | <i class="far fa-clock"></i> ${formattedTime}</p>
@@ -185,19 +185,41 @@
                 document.getElementById("cancelled-task"),
                 document.getElementById("complete-task")
             ]).on("drop", function(el, target) {
-
-
+                console.log('el', el);
                 let taskId = $(el).data("id"); // Get task ID from data attribute
+                let type = $(el).data("type");
                 let newStatus = target.id.replace("-task", ""); // Extract status from ID
+                console.log(type);
+                if (type == 'medication') {
+                    updateMedicationTask(taskId, newStatus)
+                } else {
+                    updateTaskStatus(taskId, newStatus);
+                }
 
-                // Send AJAX request to update status
-                updateTaskStatus(taskId, newStatus);
             });
         }
 
         function updateTaskStatus(taskId, newStatus) {
             $.ajax({
                 url: "{{ route('update-task-kanban') }}", // Define this route in Laravel
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}", // CSRF protection
+                    id: taskId,
+                    status: newStatus
+                },
+                success: function(response) {
+                    console.log("Task updated successfully", response);
+                },
+                error: function(error) {
+                    console.log("Error updating task", error);
+                }
+            });
+        }
+
+        function updateMedicationTask(taskId, newStatus) {
+            $.ajax({
+                url: "{{ route('update-medication-task') }}", // Define this route in Laravel
                 method: "POST",
                 data: {
                     _token: "{{ csrf_token() }}", // CSRF protection

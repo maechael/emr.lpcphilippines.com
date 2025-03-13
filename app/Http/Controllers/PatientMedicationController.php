@@ -88,7 +88,7 @@ class PatientMedicationController extends Controller
                 'patient_medication_id' => $patientMedication->id,
                 'interval_hours' => $data['interval_hours'], // Every 12, 24 hours, etc.
                 'next_dose_time' => $data['next_dose_time'], // Initial timestamp of next dose
-                'status' => 'pending-task',
+                'status' => 'pending',
             ]);
 
             DB::commit();
@@ -242,14 +242,16 @@ class PatientMedicationController extends Controller
                     return $endDate;
                 })
                 ->addColumn('next_dose_time', function ($data) {
+                    $medicationSchedule = MedicationSchedule::where('patient_medication_id', $data->id)
+                        ->latest('next_dose_time') // Make sure the column name is correct
+                        ->first(); // Fetch the latest record
 
-                    return optional($data->medicationSchedule)->next_dose_time
-                        ? \Carbon\Carbon::parse($data->medicationSchedule->next_dose_time)->format('Y-m-d h:i A')
+                    return $medicationSchedule
+                        ? \Carbon\Carbon::parse($medicationSchedule->next_dose_time)->format('Y-m-d h:i A')
                         : 'N/A';
                 })
                 ->addColumn('interval_schedule', function ($data) {
-
-                    return $data->medicationSchedule->interval_hours ?? ' ';
+                    return optional($data->medicationSchedule)->interval_hours ?? ' ';
                 })
                 ->addColumn('action', function ($data) {
                     $dropdown = '<div class="btn-group">
